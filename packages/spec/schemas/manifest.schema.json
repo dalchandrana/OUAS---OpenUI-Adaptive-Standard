@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ouas.dev/schemas/manifest.schema.json",
+  "title": "OUAS Component Manifest",
+  "description": "Defines the complete set of UI components an OUAS-compatible application exposes to AI agents. This is the app's menu — agents can only work with what's listed here.",
+  "type": "object",
+  "required": ["ouas_version", "app_id", "app_name", "generated_at", "components", "data_sources"],
+  "additionalProperties": false,
+  "properties": {
+    "ouas_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "The OUAS specification version this manifest conforms to.",
+      "examples": ["1.0"]
+    },
+    "app_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.]*$",
+      "description": "Unique reverse-domain identifier for the application.",
+      "examples": ["com.example.emailapp"]
+    },
+    "app_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable name of the application.",
+      "examples": ["MailFlow"]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when this manifest was generated."
+    },
+    "manifest_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this manifest. Used by the config migrator to detect version mismatches.",
+      "examples": ["1.0.0"]
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Array of component definitions. Each component describes a UI element the agent can place and configure.",
+      "items": { "$ref": "#/$defs/ComponentDefinition" }
+    },
+    "data_sources": {
+      "type": "array",
+      "description": "Array of available data streams that components can bind to.",
+      "items": { "$ref": "#/$defs/DataSource" }
+    },
+    "constraints": {
+      "$ref": "#/$defs/GlobalConstraints",
+      "description": "Global-level constraints the agent must respect."
+    },
+    "component_aliases": {
+      "type": "object",
+      "description": "Map of old component IDs to new component IDs. Used by the config migrator to handle component renames across manifest versions.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "examples": [{ "email-row": "email-list-item" }]
+    },
+    "agent_scope": {
+      "type": "object",
+      "description": "Restricts what AI agents are permitted to modify in this app.",
+      "properties": {
+        "allowed_regions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Only Layout Config regions with IDs in this list will be processed. Omit to allow all regions."
+        },
+        "locked_components": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Component IDs in this list cannot be modified by any agent config."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "$defs": {
+    "ComponentDefinition": {
+      "type": "object",
+      "required": ["id", "display_name", "description", "category", "data_source", "fields"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Unique kebab-case identifier for this component. Used in Layout Configs to reference this component.",
+          "examples": ["email-row", "compose-button", "priority-badge"]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable name for developer UIs and documentation.",
+          "examples": ["Email Row"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Machine-read description for AI agents. Must be precise and unambiguous — describe WHAT the component renders, not how it looks. Minimum 20 characters to enforce quality. (Rule 5.1.2)",
+          "examples": ["A single email item in a list. Shows sender, subject, preview, timestamp."]
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "list-item",
+            "detail",
+            "action",
+            "navigation",
+            "container",
+            "badge",
+            "input",
+            "display"
+          ],
+          "description": "Semantic category of the component."
+        },
+        "data_source": {
+          "type": "string",
+          "description": "The data source this component renders. Must match an entry in the manifest's data_sources array. Agent cannot bind a component to a data source not listed here. (Rule 5.1.1)"
+        },
+        "fields": {
+          "type": "object",
+          "minProperties": 1,
+          "description": "Map of field names to field definitions. These are the data properties the component can display.",
+          "additionalProperties": { "$ref": "#/$defs/FieldDefinition" }
+        },
+        "slots": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named insertion points where other components can be placed within this component.",
+          "examples": [["leading", "trailing", "actions"]]
+        },
+        "variants": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Available visual variants of this component.",
+          "examples": [["compact", "comfortable", "detailed"]]
+        },
+        "constraints": {
+          "$ref": "#/$defs/ComponentConstraints",
+          "description": "Component-level constraints the agent must respect."
+        },
+        "locked": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, this component cannot be hidden, moved, or modified by any agent-generated Layout Config."
+        }
+      }
+    },
+
+    "FieldDefinition": {
+      "type": "object",
+      "required": ["type", "required"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "datetime", "enum", "array", "object"],
+          "description": "Data type of this field."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "If true, this field MUST appear in visible_fields for any Layout Config using this component. (Rule 5.2.3)"
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable label for this field."
+        },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "For enum-typed fields, the allowed values."
+        }
+      }
+    },
+
+    "DataSource": {
+      "type": "object",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Unique identifier for this data source."
+        },
+        "description": {
+          "type": "string",
+          "description": "Machine-readable description of what data this source provides."
+        },
+        "fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of available field names in this data source."
+        }
+      }
+    },
+
+    "ComponentConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_fields_visible": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum number of fields that must be in visible_fields."
+        },
+        "required_fields_always_visible": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fields that must always appear in visible_fields regardless of the config."
+        }
+      }
+    },
+
+    "GlobalConstraints": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "max_components_per_layout": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of component regions allowed in a single layout."
+        }
+      }
+    }
+  }
+}

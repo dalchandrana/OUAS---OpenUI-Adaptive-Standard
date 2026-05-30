@@ -1,0 +1,39 @@
+{
+  "name": "@ouas/validator",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OUAS Layout Config validation engine — schema validation, manifest checking, constraint verification, and config migration",
+  "ouas_spec_version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.0"
+  },
+  "devDependencies": {
+    "@ouas/spec": "workspace:*",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "peerDependencies": {},
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ouas/ouas.git"
+  },
+  "author": "OUAS Team"
+}

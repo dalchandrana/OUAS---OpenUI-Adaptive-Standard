@@ -1,0 +1,27 @@
+{
+  "name": "@ouas/spec",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OUAS specification schemas, documentation, and examples",
+  "scripts": {
+    "test": "echo 'No tests'"
+  },
+  "ouas_spec_version": "1.0.0",
+  "main": "./schemas/manifest.schema.json",
+  "files": [
+    "schemas",
+    "docs",
+    "examples",
+    "VERSIONING.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ouas/ouas.git"
+  },
+  "author": "OUAS Team",
+  "license": "MIT"
+}

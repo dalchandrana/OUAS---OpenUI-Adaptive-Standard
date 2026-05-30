@@ -1,0 +1,58 @@
+{
+  "ouas_version": "1.0",
+  "config_id": "cfg_researcher_kb_v1",
+  "app_id": "com.example.mailflow",
+  "user_id": "user_researcher_001",
+  "manifest_version": "1.0.0",
+  "created_by_agent": "claude-3-5-sonnet",
+  "created_at": "2025-01-01T00:00:00Z",
+  "description": "Email as knowledge base for researcher. Threads automatically grouped by detected topic. Sender names shown as linked nodes (relationship view). Body preview expanded to full reading mode by default. Auto-extracted key terms shown as tags. Looks and feels like Notion.",
+  "layout": {
+    "type": "two-column",
+    "regions": [
+      {
+        "id": "topic-sidebar",
+        "component": "topic-group",
+        "variant": "list",
+        "visible_fields": ["topic_name", "email_count", "key_terms"],
+        "sort": { "field": "email_count", "direction": "desc" },
+        "slots": {
+          "items": "email-row"
+        }
+      },
+      {
+        "id": "reading-pane",
+        "component": "email-detail",
+        "variant": "reader-mode",
+        "visible_fields": ["sender", "subject", "body", "timestamp", "attachments"],
+        "slots": {
+          "header": "node-view",
+          "actions": ["reply", "forward", "archive"]
+        }
+      },
+      {
+        "id": "tag-display",
+        "component": "tag-cloud",
+        "variant": "cloud",
+        "visible_fields": ["tags", "max_tags"]
+      },
+      {
+        "id": "relationship-graph",
+        "component": "node-view",
+        "variant": "graph",
+        "visible_fields": ["sender_name", "email_count", "connected_to"]
+      },
+      {
+        "id": "thread-list",
+        "component": "thread-group",
+        "variant": "expanded",
+        "visible_fields": ["topic", "thread_count", "tags"],
+        "sort": { "field": "thread_count", "direction": "desc" }
+      }
+    ]
+  },
+  "theme": {
+    "density": "spacious",
+    "accent_color": null
+  }
+}

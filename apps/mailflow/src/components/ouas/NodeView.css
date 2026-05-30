@@ -1,0 +1,61 @@
+.node-view {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.node-view-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.node-icon {
+  color: var(--accent-color);
+}
+
+.node-name {
+  font-weight: 600;
+  font-size: var(--font-sm);
+}
+
+.node-badge {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.node-connections {
+  padding-left: var(--spacing-xl);
+}
+
+.connection-label {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.connection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.connection-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.connection-arrow {
+  color: var(--text-tertiary);
+}

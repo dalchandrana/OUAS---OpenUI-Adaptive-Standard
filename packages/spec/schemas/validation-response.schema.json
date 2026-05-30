@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ouas.dev/schemas/validation-response.schema.json",
+  "title": "OUAS Validation Response",
+  "description": "Response format for the OUAS validation pipeline. Error messages are written for AI agents to read — specific, with exact field/component names and available alternatives. Never vague. (Rule 5.3.1)",
+  "type": "object",
+  "required": ["valid", "errors", "warnings"],
+  "additionalProperties": false,
+  "properties": {
+    "valid": {
+      "type": "boolean",
+      "description": "True if the config passed all validation checks."
+    },
+    "errors": {
+      "type": "array",
+      "description": "Array of validation errors. If non-empty, the config must not be applied.",
+      "items": { "$ref": "#/$defs/ValidationError" }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Array of non-blocking warnings. Config may be applied but the agent should be aware of these.",
+      "items": { "$ref": "#/$defs/ValidationWarning" }
+    },
+    "migration_applied": {
+      "type": "boolean",
+      "description": "True if the config was migrated from an older manifest_version."
+    },
+    "migration_warnings": {
+      "type": "array",
+      "description": "Details of components that were modified or removed during migration.",
+      "items": { "$ref": "#/$defs/MigrationWarning" }
+    }
+  },
+
+  "$defs": {
+    "ValidationError": {
+      "type": "object",
+      "required": ["code", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "SCHEMA_INVALID",
+            "APP_ID_MISMATCH",
+            "COMPONENT_NOT_FOUND",
+            "FIELD_NOT_FOUND",
+            "REQUIRED_FIELD_HIDDEN",
+            "CONSTRAINT_VIOLATION",
+            "DATA_SOURCE_INVALID",
+            "VARIANT_NOT_FOUND",
+            "SLOT_NOT_FOUND",
+            "MANIFEST_VERSION_MISMATCH",
+            "CONFIG_UNRECOVERABLE"
+          ],
+          "description": "Machine-readable error code."
+        },
+        "component": {
+          "type": "string",
+          "description": "The component ID that caused the error, if applicable."
+        },
+        "field": {
+          "type": "string",
+          "description": "The field name that caused the error, if applicable."
+        },
+        "region": {
+          "type": "string",
+          "description": "The region ID that caused the error, if applicable."
+        },
+        "message": {
+          "type": "string",
+          "description": "Agent-readable error message. Must be specific, include the exact field/component, list alternatives, and never use vague language. (Rule 5.3.1)"
+        },
+        "suggestion": {
+          "type": "string",
+          "description": "A suggested fix for the agent to try.",
+          "examples": ["Did you mean 'priority'?"]
+        },
+        "available_values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of valid values the agent can use instead."
+        }
+      }
+    },
+
+    "ValidationWarning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Machine-readable warning code."
+        },
+        "component": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "description": "Agent-readable warning message."
+        }
+      }
+    },
+
+    "MigrationWarning": {
+      "type": "object",
+      "required": ["type", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["component_renamed", "component_removed", "field_removed"],
+          "description": "Type of migration action taken."
+        },
+        "old_id": {
+          "type": "string",
+          "description": "The old component/field ID that was migrated."
+        },
+        "new_id": {
+          "type": "string",
+          "description": "The new component/field ID, if renamed."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable description of the migration action."
+        }
+      }
+    }
+  }
+}

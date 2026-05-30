@@ -1,0 +1,40 @@
+{
+  "ouas_version": "1.0",
+  "config_id": "cfg_exec_tasklist_v1",
+  "app_id": "com.example.mailflow",
+  "user_id": "user_exec_001",
+  "manifest_version": "1.0.0",
+  "created_by_agent": "claude-3-5-sonnet",
+  "created_at": "2025-01-01T00:00:00Z",
+  "description": "Email as task list for busy executive. Hides subject and preview, shows only sender, priority badge, and snooze button. Sorted by priority descending, then by recency. Looks and feels like Todoist.",
+  "layout": {
+    "type": "single-column",
+    "regions": [
+      {
+        "id": "main-list",
+        "component": "email-row",
+        "variant": "compact",
+        "visible_fields": ["sender", "priority", "unread"],
+        "hidden_fields": ["subject", "preview", "timestamp"],
+        "sort": { "field": "priority", "direction": "desc" },
+        "filter": null,
+        "slots": {
+          "leading": "priority-badge",
+          "trailing": "snooze-button",
+          "actions": ["archive", "reply", "snooze"]
+        }
+      },
+      {
+        "id": "compose-bar",
+        "component": "compose-button",
+        "variant": "floating",
+        "visible_fields": ["label"],
+        "position": "bottom-right"
+      }
+    ]
+  },
+  "theme": {
+    "density": "compact",
+    "accent_color": null
+  }
+}

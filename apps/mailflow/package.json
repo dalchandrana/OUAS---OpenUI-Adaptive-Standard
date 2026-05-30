@@ -1,0 +1,35 @@
+{
+  "name": "mailflow",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"No unit tests specified for Mailflow (run E2E tests with pnpm run test:e2e)\"",
+    "test:e2e": "playwright test",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.0",
+    "@ouas/react": "workspace:*",
+    "@ouas/renderer": "workspace:*",
+    "@ouas/spec": "workspace:*",
+    "@ouas/validator": "workspace:*",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.470.0",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "typescript": "^5"
+  }
+}

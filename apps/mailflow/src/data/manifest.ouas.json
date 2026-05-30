@@ -1,0 +1,226 @@
+{
+  "ouas_version": "1.0",
+  "app_id": "com.example.mailflow",
+  "app_name": "MailFlow",
+  "generated_at": "2025-01-01T00:00:00Z",
+  "manifest_version": "1.0.0",
+  "components": [
+    {
+      "id": "email-row",
+      "display_name": "Email Row",
+      "description": "A single email item in a list. Shows sender, subject, preview, timestamp, unread status, and priority level.",
+      "category": "list-item",
+      "data_source": "emails",
+      "fields": {
+        "sender": { "type": "string", "required": true, "label": "Sender name" },
+        "subject": { "type": "string", "required": false, "label": "Email subject" },
+        "preview": { "type": "string", "required": false, "label": "Body preview" },
+        "timestamp": { "type": "datetime", "required": false, "label": "Received at" },
+        "unread": { "type": "boolean", "required": false, "label": "Unread status" },
+        "priority": {
+          "type": "enum",
+          "required": false,
+          "label": "Priority",
+          "values": ["high", "normal", "low"]
+        }
+      },
+      "slots": ["leading", "trailing", "actions"],
+      "variants": ["compact", "comfortable", "detailed"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["sender"]
+      }
+    },
+    {
+      "id": "email-detail",
+      "display_name": "Email Detail",
+      "description": "Full email detail view. Displays complete email content including sender, recipients, subject, body, attachments, and timestamp.",
+      "category": "detail",
+      "data_source": "emails",
+      "fields": {
+        "sender": { "type": "string", "required": true, "label": "Sender name" },
+        "recipients": { "type": "array", "required": false, "label": "Recipients" },
+        "subject": { "type": "string", "required": true, "label": "Email subject" },
+        "body": { "type": "string", "required": true, "label": "Email body" },
+        "timestamp": { "type": "datetime", "required": false, "label": "Received at" },
+        "attachments": { "type": "array", "required": false, "label": "Attachments" }
+      },
+      "slots": ["header", "footer", "actions"],
+      "variants": ["full", "reader-mode"],
+      "constraints": {
+        "min_fields_visible": 2,
+        "required_fields_always_visible": ["sender", "body"]
+      }
+    },
+    {
+      "id": "compose-button",
+      "display_name": "Compose Button",
+      "description": "A button that opens the email compose form. Can appear as a floating action button or inline button.",
+      "category": "action",
+      "data_source": "emails",
+      "fields": {
+        "label": { "type": "string", "required": true, "label": "Button label" }
+      },
+      "slots": [],
+      "variants": ["floating", "inline", "icon-only"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["label"]
+      }
+    },
+    {
+      "id": "thread-group",
+      "display_name": "Thread Group",
+      "description": "Groups related email threads together under a topic heading. Used for knowledge-base style views where emails are organized by detected topic.",
+      "category": "container",
+      "data_source": "emails",
+      "fields": {
+        "topic": { "type": "string", "required": true, "label": "Topic heading" },
+        "thread_count": { "type": "number", "required": false, "label": "Thread count" },
+        "tags": { "type": "array", "required": false, "label": "Auto-extracted tags" }
+      },
+      "slots": ["items"],
+      "variants": ["collapsed", "expanded"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["topic"]
+      }
+    },
+    {
+      "id": "calendar-view",
+      "display_name": "Calendar View",
+      "description": "A calendar display that maps emails containing dates to time slots. Shows emails as events in a week or day view format.",
+      "category": "container",
+      "data_source": "emails",
+      "fields": {
+        "view_type": {
+          "type": "enum",
+          "required": true,
+          "label": "Calendar view type",
+          "values": ["day", "week", "month"]
+        },
+        "date_range_start": { "type": "datetime", "required": false, "label": "Range start" },
+        "date_range_end": { "type": "datetime", "required": false, "label": "Range end" }
+      },
+      "slots": ["events"],
+      "variants": ["compact", "full", "circular"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["view_type"]
+      }
+    },
+    {
+      "id": "event-card",
+      "display_name": "Event Card",
+      "description": "Displays an email as a calendar event card. Extracts date information from the email body and shows it in a time-slotted format.",
+      "category": "list-item",
+      "data_source": "emails",
+      "fields": {
+        "title": { "type": "string", "required": true, "label": "Event title" },
+        "event_date": { "type": "datetime", "required": true, "label": "Event date" },
+        "sender": { "type": "string", "required": false, "label": "From" },
+        "organization": { "type": "string", "required": false, "label": "Organization" },
+        "is_deadline": { "type": "boolean", "required": false, "label": "Is deadline" }
+      },
+      "slots": ["badge"],
+      "variants": ["compact", "detailed"],
+      "constraints": {
+        "min_fields_visible": 2,
+        "required_fields_always_visible": ["title", "event_date"]
+      }
+    },
+    {
+      "id": "countdown-badge",
+      "display_name": "Countdown Badge",
+      "description": "A badge that shows a countdown to a deadline date extracted from an email. Displays days/hours remaining until the deadline.",
+      "category": "badge",
+      "data_source": "emails",
+      "fields": {
+        "deadline": { "type": "datetime", "required": true, "label": "Deadline date" },
+        "label": { "type": "string", "required": false, "label": "Deadline label" }
+      },
+      "slots": [],
+      "variants": ["compact", "detailed"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["deadline"]
+      }
+    },
+    {
+      "id": "topic-group",
+      "display_name": "Topic Group",
+      "description": "A container that groups emails by automatically detected topic. Displays a topic heading with expandable list of related emails underneath.",
+      "category": "container",
+      "data_source": "emails",
+      "fields": {
+        "topic_name": { "type": "string", "required": true, "label": "Topic name" },
+        "email_count": { "type": "number", "required": false, "label": "Number of emails" },
+        "key_terms": { "type": "array", "required": false, "label": "Key terms" }
+      },
+      "slots": ["items"],
+      "variants": ["list", "card"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["topic_name"]
+      }
+    },
+    {
+      "id": "node-view",
+      "display_name": "Node View",
+      "description": "Displays sender names as linked nodes showing relationships between contacts. Used in the knowledge-base layout for visualizing email relationship networks.",
+      "category": "display",
+      "data_source": "emails",
+      "fields": {
+        "sender_name": { "type": "string", "required": true, "label": "Sender name" },
+        "email_count": { "type": "number", "required": false, "label": "Email count from sender" },
+        "connected_to": { "type": "array", "required": false, "label": "Connected contacts" }
+      },
+      "slots": [],
+      "variants": ["graph", "list"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["sender_name"]
+      }
+    },
+    {
+      "id": "tag-cloud",
+      "display_name": "Tag Cloud",
+      "description": "Renders auto-extracted key terms from email bodies as a weighted tag cloud. Larger tags indicate more frequent terms across the email set.",
+      "category": "display",
+      "data_source": "emails",
+      "fields": {
+        "tags": { "type": "array", "required": true, "label": "Tag list" },
+        "max_tags": { "type": "number", "required": false, "label": "Maximum tags to show" }
+      },
+      "slots": [],
+      "variants": ["cloud", "list", "horizontal"],
+      "constraints": {
+        "min_fields_visible": 1,
+        "required_fields_always_visible": ["tags"]
+      }
+    }
+  ],
+  "data_sources": [
+    {
+      "id": "emails",
+      "description": "User's email messages including sender, subject, body, timestamps, priority, and metadata.",
+      "fields": [
+        "sender",
+        "subject",
+        "preview",
+        "body",
+        "timestamp",
+        "unread",
+        "priority",
+        "recipients",
+        "attachments",
+        "tags",
+        "topic"
+      ]
+    }
+  ],
+  "constraints": {
+    "max_components_per_layout": 20
+  },
+  "component_aliases": {}
+}

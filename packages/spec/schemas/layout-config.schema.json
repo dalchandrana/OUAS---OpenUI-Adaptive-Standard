@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ouas.dev/schemas/layout-config.schema.json",
+  "title": "OUAS Layout Config",
+  "description": "A declarative JSON document that an AI agent writes to define what a user's screen should look like. It specifies which components appear, in what order, with what data fields visible. It contains no code and does not modify the app — it is pure view data.",
+  "type": "object",
+  "required": [
+    "ouas_version",
+    "config_id",
+    "app_id",
+    "user_id",
+    "manifest_version",
+    "created_by_agent",
+    "created_at",
+    "description",
+    "layout"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "ouas_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "The OUAS specification version this config conforms to.",
+      "examples": ["1.0"]
+    },
+    "config_id": {
+      "type": "string",
+      "pattern": "^cfg_[a-z0-9_]+$",
+      "description": "Unique identifier for this specific config.",
+      "examples": ["cfg_exec_tasklist_v1"]
+    },
+    "app_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.]*$",
+      "description": "The app_id this config targets. Must match the app's manifest app_id. (Validation step 2)"
+    },
+    "user_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The user this config belongs to. Configs are per-user, not per-app."
+    },
+    "manifest_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "The manifest_version this config was written against. The renderer uses this to detect version mismatches and trigger config migration.",
+      "examples": ["1.0.0"]
+    },
+    "created_by_agent": {
+      "type": "string",
+      "description": "Identifier of the AI agent that generated this config.",
+      "examples": ["claude-3-5-sonnet", "gpt-4o"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when this config was generated."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable description of this layout's intent.",
+      "examples": ["Email as task list for busy executive"]
+    },
+    "layout": {
+      "$ref": "#/$defs/Layout",
+      "description": "The layout definition — specifies component regions and their configuration."
+    },
+    "theme": {
+      "$ref": "#/$defs/Theme",
+      "description": "Optional theme overrides for density and accent color."
+    }
+  },
+
+  "$defs": {
+    "Layout": {
+      "type": "object",
+      "required": ["type", "regions"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "single-column",
+            "two-column",
+            "grid",
+            "masonry",
+            "calendar",
+            "kanban",
+            "custom"
+          ],
+          "description": "The layout type. Determines how regions are arranged."
+        },
+        "regions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Array of region definitions. Each region places and configures one component.",
+          "items": { "$ref": "#/$defs/Region" }
+        }
+      }
+    },
+
+    "Region": {
+      "type": "object",
+      "required": ["id", "component", "visible_fields"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this region within the layout."
+        },
+        "component": {
+          "type": "string",
+          "description": "The component ID to render in this region. Must exist in the app's manifest. (Validation step 3)"
+        },
+        "variant": {
+          "type": "string",
+          "description": "Which variant of the component to render. Must be one of the component's declared variants."
+        },
+        "visible_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fields to pass as props to the component. Each must exist in the component's manifest. Required fields must be included. (Validation steps 4-5)"
+        },
+        "hidden_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fields explicitly hidden. Informational only — the renderer uses visible_fields as the source of truth."
+        },
+        "sort": {
+          "$ref": "#/$defs/SortInstruction",
+          "description": "How to sort the data before rendering."
+        },
+        "filter": {
+          "oneOf": [{ "$ref": "#/$defs/FilterInstruction" }, { "type": "null" }],
+          "description": "How to filter the data before rendering. Null means no filter."
+        },
+        "slots": {
+          "type": "object",
+          "description": "Map of slot names to component IDs that should fill those slots.",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            ]
+          }
+        },
+        "position": {
+          "type": "string",
+          "enum": [
+            "top-left",
+            "top-center",
+            "top-right",
+            "center-left",
+            "center",
+            "center-right",
+            "bottom-left",
+            "bottom-center",
+            "bottom-right"
+          ],
+          "description": "Absolute position hint for floating components."
+        }
+      }
+    },
+
+    "SortInstruction": {
+      "type": "object",
+      "required": ["field", "direction"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Field name to sort by."
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["asc", "desc"],
+          "description": "Sort direction."
+        }
+      }
+    },
+
+    "FilterInstruction": {
+      "type": "object",
+      "required": ["field", "operator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Field name to filter on."
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "contains",
+            "not_contains",
+            "in",
+            "not_in"
+          ],
+          "description": "Comparison operator."
+        },
+        "value": {
+          "description": "Value to compare against. Type must match the field's type."
+        }
+      }
+    },
+
+    "Theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "density": {
+          "type": "string",
+          "enum": ["compact", "comfortable", "spacious"],
+          "description": "Layout density preference."
+        },
+        "accent_color": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}$"
+            },
+            { "type": "null" }
+          ],
+          "description": "Optional accent color override as hex. Null uses app default."
+        }
+      }
+    }
+  }
+}

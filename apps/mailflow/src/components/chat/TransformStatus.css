@@ -1,0 +1,128 @@
+.transform-status {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-sm);
+}
+
+.transform-status.generating, .transform-status.validating {
+  border-color: var(--accent-color);
+}
+
+.transform-status.success {
+  border-color: var(--success-color);
+}
+
+.transform-status.error {
+  border-color: var(--danger-color);
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-subtle);
+  gap: var(--spacing-sm);
+}
+
+.status-title {
+  flex: 1;
+  font-weight: 500;
+}
+
+.spinner {
+  color: var(--accent-color);
+  animation: spin 1s linear infinite;
+}
+
+.success-icon {
+  color: var(--success-color);
+}
+
+.error-icon {
+  color: var(--danger-color);
+}
+
+.warning-icon {
+  color: var(--warning-color);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dismiss-btn {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+.dismiss-btn:hover {
+  color: var(--text-primary);
+}
+
+.status-error-message {
+  padding: var(--spacing-md);
+  color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.05);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.validation-details {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.validation-section {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+}
+
+.validation-section strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: var(--font-xs);
+  text-transform: uppercase;
+}
+
+.validation-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.validation-section li {
+  color: var(--text-secondary);
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.suggestion {
+  display: block;
+  color: var(--accent-color);
+  margin-top: 2px;
+}
+
+.validation-section.errors {
+  border-left: 3px solid var(--danger-color);
+}
+
+.validation-section.warnings {
+  border-left: 3px solid var(--warning-color);
+}
+
+.validation-section.migration {
+  border-left: 3px solid var(--accent-color);
+}

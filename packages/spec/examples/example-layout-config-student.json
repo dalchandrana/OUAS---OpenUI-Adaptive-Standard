@@ -1,0 +1,50 @@
+{
+  "ouas_version": "1.0",
+  "config_id": "cfg_student_calendar_v1",
+  "app_id": "com.example.mailflow",
+  "user_id": "user_student_001",
+  "manifest_version": "1.0.0",
+  "created_by_agent": "claude-3-5-sonnet",
+  "created_at": "2025-01-01T00:00:00Z",
+  "description": "Email as calendar for student. Extracts dates from email body and maps emails to calendar slots. Groups by club, class, or sender organization. Deadline emails shown with countdown badge. Week view as default. Looks and feels like Google Calendar.",
+  "layout": {
+    "type": "calendar",
+    "regions": [
+      {
+        "id": "calendar-main",
+        "component": "calendar-view",
+        "variant": "full",
+        "visible_fields": ["view_type", "date_range_start", "date_range_end"],
+        "slots": {
+          "events": "event-card"
+        }
+      },
+      {
+        "id": "event-items",
+        "component": "event-card",
+        "variant": "compact",
+        "visible_fields": ["title", "event_date", "sender", "organization", "is_deadline"],
+        "sort": { "field": "event_date", "direction": "asc" },
+        "slots": {
+          "badge": "countdown-badge"
+        }
+      },
+      {
+        "id": "deadline-indicator",
+        "component": "countdown-badge",
+        "variant": "detailed",
+        "visible_fields": ["deadline", "label"]
+      },
+      {
+        "id": "compose-bar",
+        "component": "compose-button",
+        "variant": "inline",
+        "visible_fields": ["label"]
+      }
+    ]
+  },
+  "theme": {
+    "density": "comfortable",
+    "accent_color": "#4285F4"
+  }
+}

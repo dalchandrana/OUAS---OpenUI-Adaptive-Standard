@@ -1,0 +1,44 @@
+.event-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid var(--accent-color);
+}
+
+.event-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.event-card.is-deadline {
+  border-left-color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.event-card-time {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.event-card-title {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.event-card-sender {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.event-card-badge {
+  margin-top: 4px;
+}

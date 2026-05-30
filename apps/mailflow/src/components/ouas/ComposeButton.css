@@ -1,0 +1,45 @@
+.compose-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.compose-btn.floating {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: var(--radius-full);
+  padding: 16px;
+  gap: var(--spacing-sm);
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+
+.compose-btn.floating:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 20px -3px rgba(0, 0, 0, 0.15);
+}
+
+.floating-label {
+  font-size: var(--font-base);
+  font-weight: 500;
+  padding-right: var(--spacing-xs);
+  display: none; /* Hide label on small screens */
+}
+
+@media (min-width: 768px) {
+  .floating-label {
+    display: block;
+  }
+}
+
+.compose-btn.inline {
+  width: 100%;
+}

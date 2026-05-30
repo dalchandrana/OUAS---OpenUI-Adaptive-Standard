@@ -1,0 +1,198 @@
+.calendar-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calendar-header h2 {
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.calendar-view-toggle {
+  display: flex;
+  gap: var(--spacing-sm);
+  background: var(--bg-subtle);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+}
+
+.calendar-view-toggle span {
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.calendar-view-toggle span.active {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.calendar-grid {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+}
+
+.calendar-day {
+  flex: 1;
+  min-width: 150px;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-day:last-child {
+  border-right: none;
+}
+
+.calendar-day.today {
+  background-color: rgba(59, 130, 246, 0.05); /* light accent */
+}
+
+.day-header {
+  text-align: center;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.day-name {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.day-number {
+  font-size: var(--font-lg);
+  font-weight: 500;
+}
+
+.calendar-day.today .day-number {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.day-events {
+  padding: var(--spacing-xs);
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ─── Circular Variant ─── */
+.calendar-view.circular {
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-primary);
+  box-shadow: none;
+  border: none;
+}
+
+.calendar-view.circular .calendar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  justify-content: center;
+  overflow-x: unset;
+}
+
+.calendar-view.circular .calendar-day {
+  flex: none;
+  width: 130px;
+  height: 130px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: var(--spacing-sm);
+  position: relative;
+}
+
+.calendar-view.circular .calendar-day:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+}
+
+.calendar-view.circular .calendar-day.today {
+  border: 2px solid var(--accent-color);
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.calendar-view.circular .day-header {
+  border-bottom: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-view.circular .day-name {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.calendar-view.circular .day-number {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.calendar-view.circular .day-events {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  position: absolute;
+  bottom: 12px;
+}
+
+/* Hide standard event cards in circular day bubbles */
+.calendar-view.circular .day-events > * {
+  display: none !important;
+}
+
+/* Pulse indicator for circular days with events */
+.calendar-view.circular .day-events::after {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--accent-color);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
