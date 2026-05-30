@@ -53,6 +53,7 @@ import { validateLayoutConfigSchema, checkConfigSizeLimits } from './schema-vali
 import { validateAgainstManifest } from './manifest-validator.js';
 import { checkConstraints, checkAgentScope } from './constraint-checker.js';
 import { migrateConfig, needsMigration } from './config-migrator.js';
+import { ErrorCodes } from './error-codes.js';
 
 /**
  * Runs the full 7-step OUAS validation pipeline on a Layout Config.
@@ -138,13 +139,13 @@ export function validateLayoutConfig(rawConfigJson: string, manifest: Manifest):
     return { valid: false, errors: limitErrors, warnings: [] };
   }
 
-  let config: any;
+  let config: unknown;
   try {
     config = JSON.parse(rawConfigJson);
   } catch {
     return { 
       valid: false, 
-      errors: [{ code: 'SCHEMA_INVALID' as any, message: 'Config is not valid JSON.' }], 
+      errors: [{ code: ErrorCodes.SCHEMA_INVALID, message: 'Config is not valid JSON.' }], 
       warnings: [] 
     };
   }

@@ -42,37 +42,38 @@ export function checkConfigSizeLimits(rawConfigJson: string): ValidationError[] 
   const bytes = new TextEncoder().encode(rawConfigJson).length;
   if (bytes > OUAS_LIMITS.MAX_CONFIG_BYTES) {
     errors.push({
-      code: "CONFIG_TOO_LARGE" as any,
+      code: ErrorCodes.CONFIG_TOO_LARGE,
       message: `Config size is ${bytes} bytes. Maximum allowed is ${OUAS_LIMITS.MAX_CONFIG_BYTES} bytes (4KB).`,
       suggestion: "Reduce the number of regions or shorten field name lists."
     });
     return errors; // don't parse further if too large
   }
 
-  let config: any;
+  let config: Record<string, unknown>;
   try {
-    config = JSON.parse(rawConfigJson);
+    config = JSON.parse(rawConfigJson) as Record<string, unknown>;
   } catch {
-    errors.push({ code: "SCHEMA_INVALID" as any, message: "Config is not valid JSON." });
+    errors.push({ code: ErrorCodes.SCHEMA_INVALID, message: "Config is not valid JSON." });
     return errors;
   }
 
   // 2. Region count check
-  const regions = config?.layout?.regions ?? [];
+  const layout = config?.layout as Record<string, unknown> | undefined;
+  const regions = (layout?.regions ?? []) as unknown[];
   if (regions.length > OUAS_LIMITS.MAX_REGIONS) {
     errors.push({
-      code: "TOO_MANY_REGIONS" as any,
+      code: ErrorCodes.TOO_MANY_REGIONS,
       message: `Config has ${regions.length} regions. Maximum allowed is ${OUAS_LIMITS.MAX_REGIONS}.`,
       suggestion: "Split complex layouts into multiple views instead of one large config."
     });
   }
 
   // 3. String length checks — walk every string value in the config
-  function checkStrings(obj: any, path: string) {
+  function checkStrings(obj: unknown, path: string) {
     if (typeof obj === "string") {
       if (obj.length > OUAS_LIMITS.MAX_FREE_TEXT_LENGTH) {
         errors.push({
-          code: "STRING_TOO_LONG" as any,
+          code: ErrorCodes.STRING_TOO_LONG,
           field: path,
           message: `Value at '${path}' is ${obj.length} chars. Maximum is ${OUAS_LIMITS.MAX_FREE_TEXT_LENGTH}.`,
           suggestion: "Shorten this value."
@@ -82,7 +83,7 @@ export function checkConfigSizeLimits(rawConfigJson: string): ValidationError[] 
       obj.forEach((item, i) => checkStrings(item, `${path}[${i}]`));
     } else if (obj && typeof obj === "object") {
       for (const key of Object.keys(obj)) {
-        checkStrings(obj[key], `${path}.${key}`);
+        checkStrings((obj as Record<string, unknown>)[key], `${path}.${key}`);
       }
     }
   }

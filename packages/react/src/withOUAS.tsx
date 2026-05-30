@@ -35,8 +35,6 @@ import type { ComponentType } from 'react';
 import type { OUASComponentDefinition, OUASAnnotatedComponent } from './types.js';
 import { OUAS_METADATA_KEY } from './types.js';
 
-declare const process: any;
-
 /**
  * Wraps a React component with OUAS metadata.
  * Does NOT modify the component's behavior — only attaches metadata.
@@ -60,7 +58,7 @@ export function withOUAS<P extends Record<string, unknown>>(
 
   // Preserve display name for debugging
   const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-  (annotated as any).displayName = `withOUAS(${displayName})`;
+  annotated.displayName = `withOUAS(${displayName})`;
 
   return annotated;
 }
