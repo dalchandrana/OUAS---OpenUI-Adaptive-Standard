@@ -8,6 +8,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { checkSkillsStaleness } from '../staleness.js';
 
 interface ValidateOptions {
   config: string;
@@ -20,6 +21,8 @@ export async function validateCommand(options: ValidateOptions): Promise<void> {
   // Load files
   const configFile = path.resolve(configPath);
   const manifestFile = path.resolve(manifestPath);
+
+  checkSkillsStaleness(process.cwd());
 
   if (!fs.existsSync(configFile)) {
     console.error(`❌ Config file not found: ${configFile}`);

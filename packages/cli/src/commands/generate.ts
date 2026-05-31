@@ -10,6 +10,7 @@
 import * as path from 'path';
 import { scanProject } from '../scanner.js';
 import { writeManifest } from '../manifest-writer.js';
+import { checkSkillsStaleness } from '../staleness.js';
 
 interface GenerateOptions {
   dir: string;
@@ -21,6 +22,8 @@ interface GenerateOptions {
 export async function generate(options: GenerateOptions): Promise<void> {
   const { dir, output, appId, appName } = options;
   const projectDir = path.resolve(dir);
+
+  checkSkillsStaleness(projectDir);
 
   console.log(`\n🔍 Scanning ${projectDir} for OUAS components...\n`);
 

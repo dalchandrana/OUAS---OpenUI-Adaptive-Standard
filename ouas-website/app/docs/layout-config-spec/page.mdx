@@ -1,0 +1,96 @@
+import { DocHero } from '@/components/mdx/DocHero';
+import { HoverLink } from '@/components/mdx/HoverLink';
+import { CodeBlock } from '@/components/ui/CodeBlock';
+import { DocsPagination } from '@/components/mdx/DocsPagination';
+
+<DocHero 
+  title="Layout Configuration Specification" 
+  subtitle="The strict JSON payload submitted by the AI agent to deterministically mutate the user interface."
+/>
+
+## Overview
+
+While the <HoverLink href="/docs/manifest-spec" title="Component Manifest Spec" description="The central source of truth mapping UI components to schemas.">Component Manifest</HoverLink> defines what is theoretically possible, the **Layout Configuration** (or Layout Config) defines what is actually happening on the screen. 
+
+When an AI Agent decides to reshape the UI based on user intent, it does not write React code. Instead, it generates a Layout Config JSON payload. This payload references the component `id`s declared in the manifest and supplies concrete values for their props.
+
+---
+
+## The Layout Config Object
+
+Every mutation requested by the agent is encapsulated in a layout action object.
+
+<CodeBlock
+  code={`{
+  "action": "UPDATE_LAYOUT",
+  "target_id": "main-workspace",
+  "payload": {
+    "id": "KanbanBoard",
+    "props": {
+      "groupBy": "status"
+    },
+    "children": [
+      {
+        "id": "KanbanColumn",
+        "props": {
+          "title": "To Do"
+        }
+      }
+    ]
+  }
+}`}
+  lang="json"
+  filename="layout-config.json"
+/>
+
+### `action` (String)
+The type of mutation the agent is requesting. 
+- `UPDATE_LAYOUT`: Replaces the children of the target component with the new payload.
+- `APPEND_LAYOUT`: Appends the payload to the existing children of the target.
+- `RESET`: Reverts the UI to its default, developer-defined state.
+
+### `target_id` (String)
+The ID of the `Slot` or Component where this layout mutation should be applied.
+
+### `payload` (Object)
+The actual tree of components to be rendered.
+
+---
+
+## Constructing the Payload Tree
+
+The payload is a recursive structure representing the UI tree. Each node must have the following structure:
+
+- **`id`**: Must exactly match a component `id` from the Manifest.
+- **`props`**: An object containing the values for the component. The <HoverLink href="/docs/validation" title="Validation Pipeline" description="The strict firewall that validates AI outputs against the manifest.">Validation Pipeline</HoverLink> will ensure these values strictly conform to the schema defined in the manifest.
+- **`children`**: (Optional) An array of nested layout payload objects.
+
+### Example: Deeply Nested Layout
+
+<CodeBlock
+  code={`{
+  "action": "UPDATE_LAYOUT",
+  "target_id": "email-list",
+  "payload": {
+    "id": "VStack",
+    "props": { "spacing": "sm" },
+    "children": [
+      {
+        "id": "EmailCard",
+        "props": { "sender": "Alice", "subject": "Project Update", "unread": true }
+      },
+      {
+        "id": "EmailCard",
+        "props": { "sender": "Bob", "subject": "Lunch?", "unread": false }
+      }
+    ]
+  }
+}`}
+  lang="json"
+  filename="nested-layout.json"
+/>
+
+<DocsPagination 
+  prev={{ title: "Manifest Spec", href: "/docs/manifest-spec", description: "Learn how component schemas are defined" }}
+  next={{ title: "Validation Pipeline", href: "/docs/validation", description: "Learn how layouts are safely validated" }}
+/>

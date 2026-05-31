@@ -1,0 +1,93 @@
+import { DocHero } from '@/components/mdx/DocHero';
+import { CodeBlock } from '@/components/ui/CodeBlock';
+import { DocsPagination } from '@/components/mdx/DocsPagination';
+
+<DocHero 
+  title="Component Manifest Specification" 
+  subtitle="The strict JSON schema defining the UI capabilities exposed to your AI agents."
+/>
+
+## Overview
+
+The **Component Manifest** is the central source of truth in the OUAS architecture. It acts as an "API Reference" for the AI Agent, detailing exactly which UI components exist in the host application, what properties they accept, and what constraints they have.
+
+By enforcing interaction through a strictly typed Manifest, OUAS guarantees that the Agent cannot hallucinate class names, inject malicious scripts, or crash the React rendering tree with undefined components.
+
+---
+
+## Top-Level Structure
+
+A valid OUAS Component Manifest is a JSON object with three required root properties.
+
+<CodeBlock
+  code={`{
+  "ouas_version": "1.0.0",
+  "app_id": "mailflow-dashboard",
+  "components": [
+    // Component schemas go here
+  ]
+}`}
+  lang="json"
+  filename="manifest.json"
+/>
+
+### `ouas_version` (String)
+The version of the OUAS specification this manifest adheres to. Currently `1.0.0`.
+
+### `app_id` (String)
+A unique identifier for the host application or specific view context.
+
+### `components` (Array)
+An array of `ComponentSchema` objects detailing the available adaptable UI components.
+
+---
+
+## Component Schema Definition
+
+Each object inside the `components` array strictly defines a single UI element.
+
+<CodeBlock
+  code={`{
+  "id": "KanbanColumn",
+  "description": "A vertically scrollable column that holds Task cards.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "The header title of the column."
+    },
+    "priority": {
+      "type": "enum",
+      "values": ["high", "medium", "low"],
+      "required": false
+    }
+  },
+  "slots": {
+    "children": {
+      "allowed_components": ["TaskCard"],
+      "max_items": 50
+    }
+  }
+}`}
+  lang="json"
+  filename="ComponentSchema"
+/>
+
+### `id` (String)
+The unique string identifier for the component (e.g., `"TaskCard"`, `"Sidebar"`). The AI Agent uses this exact ID when requesting a component to be rendered.
+
+### `description` (String, Optional)
+A semantic description of what the component does. This is highly recommended as it provides vital context to the LLM.
+
+### `props` (Object)
+A standard JSON schema subset defining the properties the component accepts. Supported types include `string`, `number`, `boolean`, `array`, and `enum`.
+
+### `slots` (Object, Optional)
+Defines where nested components can be placed.
+- `allowed_components`: An array of component `id`s that are permitted to be rendered inside this slot. This prevents agents from putting a `Sidebar` inside a `Button`.
+- `max_items`: Limits the number of children to prevent rendering infinite loops or layout breaking.
+
+<DocsPagination 
+  prev={{ title: "Getting Started", href: "/docs/getting-started", description: "Learn how to annotate your first component in under 5 minutes" }}
+  next={{ title: "Layout Config Spec", href: "/docs/layout-config-spec", description: "Learn how agents mutate the UI" }}
+/>

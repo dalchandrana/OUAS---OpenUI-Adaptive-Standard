@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "ouas_spec_compatibility": "^1.0.0",
+  "files": {
+    "core.md": "1.0.0",
+    "tasks/annotate.md": "1.0.0",
+    "tasks/manifest.md": "1.0.0",
+    "tasks/agent-api.md": "1.0.0",
+    "tasks/security.md": "1.0.0",
+    "tasks/prompt-engineering.md": "1.0.0",
+    "frameworks/react.md": "1.0.0",
+    "frameworks/nextjs.md": "1.0.0",
+    "agents/cursor.md": "1.0.0",
+    "agents/copilot.md": "1.0.0",
+    "agents/generic.md": "1.0.0"
+  }
+}

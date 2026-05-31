@@ -1,0 +1,85 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { StepTimeline } from "@/components/ui/StepTimeline";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+
+<DocHero 
+  title="Getting Started" 
+  subtitle="The quickest way to get started with OUAS is to add it to an existing React or Next.js application. Our core SDK is built to be a zero-dependency, lightweight drop-in that leverages your existing component architecture." 
+/>
+
+<StepTimeline 
+  steps={[
+    {
+      number: 1,
+      title: "Install Dependencies",
+      description: "Install the core SDK and the renderer. You can also optionally install the CLI globally if you prefer.",
+      code: (
+        <CodeBlock
+          code="npm install @ouas/react @ouas/renderer"
+          lang="bash"
+          filename="terminal"
+        />
+      )
+    },
+    {
+      number: 2,
+      title: "Annotate Components",
+      description: "Wrap your existing components with the withOUAS HOC to expose them safely to the agent. This defines the exact schema the agent is allowed to manipulate.",
+      code: (
+        <CodeBlock
+          code={`import { withOUAS } from '@ouas/react';
+import { Card } from './components/Card';
+
+export const AdaptiveCard = withOUAS(Card, {
+  id: 'adaptive-card',
+  schema: {
+    title: { type: 'string', required: true }
+  }
+});`}
+          lang="tsx"
+          filename="AdaptiveCard.tsx"
+        />
+      )
+    },
+    {
+      number: 3,
+      title: "Generate Manifest",
+      description: "Run the CLI to statically analyze your codebase, generate your Component Manifest, and validate your schemas.",
+      code: (
+        <CodeBlock
+          code="npx ouas generate"
+          lang="bash"
+          filename="terminal"
+        />
+      )
+    },
+    {
+      number: 4,
+      title: "Mount the Renderer",
+      description: "Use the OUASProvider at the root of your adaptive section. It parses incoming layout configurations and deterministically renders the annotated components.",
+      code: (
+        <CodeBlock
+          code={`import { OUASProvider } from '@ouas/react';
+import manifest from './ouas-manifest.json';
+import { AdaptiveCard } from './components/AdaptiveCard';
+
+export default function App() {
+  return (
+    <OUASProvider manifest={manifest}>
+      <AdaptiveCard title="Hello Agent!" />
+    </OUASProvider>
+  );
+}`}
+          lang="tsx"
+          filename="App.tsx"
+        />
+      )
+    }
+  ]}
+/>
+
+<DocsPagination 
+  prev={{ title: "Introduction", href: "/docs/introduction", description: "Learn about the architecture" }}
+  next={{ title: "Manifest Spec", href: "/docs/manifest-spec", description: "Learn how component schemas are defined" }}
+/>

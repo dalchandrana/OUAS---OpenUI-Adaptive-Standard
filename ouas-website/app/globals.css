@@ -1,0 +1,188 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg-base: var(--bg-base);
+  --color-surface: var(--surface);
+  --color-bg-elevated: var(--bg-elevated);
+
+  --color-border-color: var(--border-color);
+  --color-border-bright: var(--border-bright);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+}
+
+@layer base {
+  :root {
+    --bg-base: #ffffff;
+    --surface: #fafafa;
+    --bg-elevated: #f5f5f5;
+    
+    --border-color: #e5e5e5;
+    --border-bright: #d4d4d4;
+    
+    --text-primary: #0a0a0a;
+    --text-secondary: #525252;
+    --text-tertiary: #a3a3a3;
+    
+    --accent-primary: #4D7C0F;     /* High contrast deep lime/olive for light mode */
+    --accent-secondary: #0a0a0a;   /* Near black */
+    --accent-foreground: #000000;
+
+    --success: #15803d; /* High contrast green */
+    --warning: #d97706; /* High contrast amber */
+    --danger: #dc2626;  /* High contrast red */
+
+    --grid-color: transparent;
+    --grid-line-color: rgba(0, 0, 0, 0.08);
+    --grid-size: 32px;
+
+    --theme-overlay-bg: #000000;
+  }
+
+  .dark {
+    --bg-base: #000000;
+    --surface: #0a0a0a;
+    --bg-elevated: #111111;
+    
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-bright: rgba(255, 255, 255, 0.2);
+    
+    --text-primary: #ffffff;
+    --text-secondary: #a3a3a3;
+    --text-tertiary: #737373;
+    
+    --accent-primary: #CCFF00;     /* Dodo Lime green */
+    --accent-secondary: #ffffff;   /* Pure white */
+    --accent-foreground: #000000;
+
+    --success: #CCFF00;
+    --warning: #FBBF24;
+    --danger: #F87171;
+
+    --grid-color: transparent;
+    --grid-line-color: rgba(255,255,255,0.08);
+    --grid-size: 32px;
+
+    --theme-overlay-bg: #ffffff;
+  }
+}
+
+@layer utilities {
+  .grid-bg {
+    background-color: var(--grid-color);
+    background-image: radial-gradient(var(--grid-line-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+  }
+}
+
+/* ─── Theme Transition Overlay ──────────────────────────────── */
+
+#theme-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+#theme-overlay.filling {
+  animation: theme-fill-in 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: bottom;
+}
+
+#theme-overlay.revealing {
+  animation: theme-fill-out 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: top;
+}
+
+@keyframes theme-fill-in {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes theme-fill-out {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(0); }
+}
+
+/* ─── Marquee Animations ────────────────────────────────────── */
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee var(--tw-duration, 30s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse var(--tw-duration, 30s) linear infinite;
+}
+
+/* ─── Custom Page Animations ────────────────────────────────── */
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0; /* Starts hidden until animation begins */
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ─── Custom Scrollbar ──────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-bright);
+}

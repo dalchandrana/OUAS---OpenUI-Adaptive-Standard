@@ -1,0 +1,67 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { StepTimeline } from "@/components/ui/StepTimeline";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+
+<DocHero 
+  title="Changelog" 
+  subtitle="Release notes, updates, and historical build status of the OpenUI Adaptive Standard." 
+/>
+
+<StepTimeline
+  steps={[
+    {
+      title: "v1.0.0 - The Genesis Release",
+      description: "Initial stable release of the OpenUI Adaptive Standard (OUAS) monorepo. This release solidifies the architectural foundation for agentic UI generation.",
+      content: (
+        <div className="prose prose-sm dark:prose-invert">
+          <h4>Core Architecture & Packages</h4>
+          <ul>
+            <li><strong><code>@ouas/core</code></strong>: Deployed strictly typed TypeScript interfaces defining the <code>ComponentSchema</code> and <code>LayoutConfig</code> standards.</li>
+            <li><strong><code>@ouas/react</code></strong>: Shipped the <code>withOUAS</code> HOC and <code>ComponentRegistry</code> for safely exposing React components to AI agents.</li>
+            <li><strong><code>@ouas/renderer</code></strong>: Implemented the dynamic JSON-to-React rendering engine, heavily fortified with Error Boundaries to catch AI hallucinations without crashing the host app.</li>
+            <li><strong><code>@ouas/cli</code></strong>: Built the AST-parsing CLI tool that automatically scans the codebase and generates a deterministic <code>manifest.json</code>.</li>
+          </ul>
+
+          <h4>Demo & Documentation</h4>
+          <ul>
+            <li><strong>MailFlow App</strong>: Successfully shipped a fully functioning, production-grade email client demonstration. Features a premium Gmail-style UI, interactive sidebars, and a live AI Design Agent panel demonstrating real-time UI mutations via OUAS.</li>
+            <li><strong>OUAS Website</strong>: Launched this comprehensive documentation portal. Designed with an ultra-premium aesthetic, glassmorphism, dynamic Light/Dark mode, and custom Framer Motion interactive components (<code>StepTimeline</code>, <code>PackageGrid</code>, <code>TabbedShowcase</code>).</li>
+          </ul>
+
+          <h4>Security & Stability Audit</h4>
+          <p>The v1.0.0 architecture guarantees 100% protection against LLM-driven XSS and arbitrary code execution by ensuring the agent can only pass typed primitive props to pre-compiled React components.</p>
+        </div>
+      ),
+      icon: "rocket"
+    },
+    {
+      title: "v0.9.0 - Beta Architecture",
+      description: "Finalized the validation pipeline and error handling mechanisms.",
+      content: (
+        <div className="prose prose-sm dark:prose-invert">
+          <p>Implemented the 3-Step Security Firewall:</p>
+          <ol>
+            <li>Component Reference Validation</li>
+            <li>Prop Schema Type Checking</li>
+            <li>Value Constraints (Enums, Min/Max)</li>
+          </ol>
+        </div>
+      ),
+      icon: "shield"
+    },
+    {
+      title: "v0.1.0 - Proof of Concept",
+      description: "Initial ideation and proof of concept for bridging the gap between Large Language Models and deterministic UI.",
+      content: (
+        <div className="prose prose-sm dark:prose-invert">
+          <p>Experimented with dynamic React rendering and established the base JSON payload structure.</p>
+        </div>
+      ),
+      icon: "code"
+    }
+  ]}
+/>
+
+<DocsPagination 
+  prev={{ title: "Versioning", href: "/docs/versioning", description: "Learn how to version component manifests" }}
+/>

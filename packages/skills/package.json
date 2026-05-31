@@ -1,0 +1,29 @@
+{
+  "name": "@ouas/skills",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OUAS Skills - Context injection files for AI agents",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5.7.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dalchandrana/OUAS---OpenUI-Adaptive-Standard.git"
+  },
+  "author": "OUAS Team"
+}

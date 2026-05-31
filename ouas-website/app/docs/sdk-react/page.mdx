@@ -1,0 +1,99 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { HoverLink } from "@/components/mdx/HoverLink";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+import { CodeBlock } from "@/components/ui/CodeBlock";
+
+<DocHero 
+  title="React SDK Reference" 
+  subtitle="The official bindings for integrating the OpenUI Adaptive Standard into React and Next.js applications." 
+/>
+
+## Overview
+
+The `@ouas/react` SDK provides the core bindings necessary to expose your React components to the AI Agent. It handles component registration, strictly typed property validation, and the generation of the <HoverLink href="/docs/manifest-spec" title="Component Manifest Spec" description="The central source of truth mapping UI components to schemas.">component manifest</HoverLink>.
+
+## Installation
+
+Install the React SDK and its required peer dependencies:
+
+<CodeBlock 
+  lang="bash" 
+  code="npm install @ouas/react @ouas/core" 
+/>
+
+## Core Concepts
+
+### 1. The `withOUAS` Higher-Order Component
+
+To expose a component to the AI, you must wrap it using the `withOUAS` higher-order component. This function registers the component into the global OUAS registry and defines the explicit JSON schema that the AI will use to interface with it.
+
+<CodeBlock 
+  lang="tsx"
+  filename="components/WeatherCard.tsx"
+  code={`import { withOUAS } from '@ouas/react';
+
+const WeatherCardBase = ({ city, temperature, condition }) => {
+  return (
+    <div className="weather-card">
+      <h3>{city}</h3>
+      <p>{temperature}°C - {condition}</p>
+    </div>
+  );
+};
+
+export const WeatherCard = withOUAS(WeatherCardBase, {
+  id: 'weather-card',
+  schema: {
+    city: { type: 'string', required: true, description: 'The name of the city' },
+    temperature: { type: 'number', required: true },
+    condition: { 
+      type: 'string', 
+      required: true, 
+      enum: ['sunny', 'cloudy', 'rainy', 'snowy'] 
+    }
+  }
+});`}
+/>
+
+### 2. Component Registry
+
+The SDK maintains an internal registry of all components wrapped with `withOUAS`. When the AI agent requests the <HoverLink href="/docs/manifest-spec" title="Component Manifest Spec" description="The central source of truth mapping UI components to schemas.">component manifest</HoverLink>, the SDK dynamically traverses this registry to build the `manifest.json`.
+
+You do not need to manually manage the registry. Simply importing the wrapped component into your application ensures it is registered.
+
+<CodeBlock 
+  lang="tsx"
+  filename="app/page.tsx"
+  code={`import { WeatherCard } from '@/components/WeatherCard';
+// By importing WeatherCard, it is automatically added to the OUAS Registry.
+
+export default function Page() {
+  return (
+    <main>
+      <h1>Dashboard</h1>
+      {/* You can still use the component normally in your React tree! */}
+      <WeatherCard city="San Francisco" temperature={18} condition="sunny" />
+    </main>
+  );
+}`}
+/>
+
+## API Reference
+
+### `withOUAS(Component, config)`
+
+Wraps a standard React component and returns an OUAS-compliant component.
+
+**Arguments:**
+- `Component` *(React.ComponentType)*: The React component to wrap.
+- `config` *(Object)*: The configuration object.
+  - `id` *(string)*: A unique identifier for the component. Must be kebab-case.
+  - `schema` *(Object)*: A key-value map defining the properties the AI is allowed to inject.
+
+**Returns:**
+A new React component that can be used normally, but is now strictly tracked by the OUAS engine.
+
+<DocsPagination 
+  prev={{ title: "Agent API", href: "/docs/agent-api", description: "How the Agent interacts with the UI" }}
+  next={{ title: "Renderer Reference", href: "/docs/renderer", description: "Learn how the renderer maps JSON to React" }}
+/>

@@ -1,0 +1,593 @@
+IMPLEMENTATION PLAN
+OUAS Website
+Implementation plan — design system, pages, animations, docs
+
+Project
+OpenUI Adaptive Standard — Marketing & Documentation Website
+Design Inspiration
+dodopayments.com — dark, editorial, developer-first
+Tech Stack
+Next.js 14+ (App Router), Tailwind CSS, Framer Motion, MDX
+Total Phases
+4 phases across 10 weeks
+Primary Audience
+Frontend developers, engineering leads, open-source contributors
+Key Feature
+Copy Page CTA — one click copies full OUAS context for AI agents
+
+
+SECTION 01
+Design System
+Typography, colour, motion, spacing — the rules everything is built on
+
+Design philosophy
+The OUAS website takes direct inspiration from dodopayments.com: near-black backgrounds, sharp editorial typography, generous whitespace, and a developer-first tone that treats visitors as intelligent builders. Every design decision signals: 'this is a serious standard built by people who care about craft.'
+Key characteristics borrowed from Dodo Payments and adapted for OUAS: dark background as the default (not an option), code blocks as first-class visual elements, horizontal scrolling logo/partner strips with infinite marquee animation, tabbed feature sections that switch product areas without page reload, and a prominent developer-facing CTA that leads directly to documentation.
+
+Colour palette
+Token
+Value + usage
+--color-bg-base
+#0A0A0F — near-black page background
+--color-bg-surface
+#0D0D1A — card and section backgrounds
+--color-bg-elevated
+#13132A — hover states, tooltips
+--color-accent-primary
+#5B6BF8 — primary interactive colour (indigo)
+--color-accent-glow
+#5B6BF833 — accent at 20% opacity for glow halos
+--color-accent-secondary
+#00D4AA — teal for secondary highlights
+--color-text-primary
+#F0F0FF — near-white body text
+--color-text-secondary
+#8892B0 — muted captions and metadata
+--color-text-tertiary
+#4A4A6A — disabled states, placeholder text
+--color-border
+#1E1E3A — default border between sections and cards
+--color-border-bright
+#2E2E5A — hover-state borders
+--color-success
+#00D4AA — valid / passing states
+--color-warning
+#F59E0B — warnings in docs and status
+--color-danger
+#EF4444 — error states and danger callouts
+
+Typography
+Two fonts only — no exceptions. A sharp geometric display font for headings that feels architectural and precise. A high-legibility mono-friendly sans for body text and UI copy.
+Element
+Specification
+Display font
+Syne (Google Fonts) — bold, geometric, architectural. Used for all H1 and H2 headings.
+Body font
+JetBrains Mono (Google Fonts) — technically flavoured, legible. Used for body, labels, nav.
+Code font
+JetBrains Mono (same) — consistent with body, zero font-switch friction for developers.
+H1 spec
+Syne, 72–96px, weight 800, line-height 1.05, letter-spacing -0.03em
+H2 spec
+Syne, 40–52px, weight 700, line-height 1.1, letter-spacing -0.02em
+H3 spec
+JetBrains Mono, 22–26px, weight 600, line-height 1.3
+Body spec
+JetBrains Mono, 16px, weight 400, line-height 1.7
+Label spec
+JetBrains Mono, 12–13px, weight 500, letter-spacing 0.08em, uppercase
+Code spec
+JetBrains Mono, 14px, weight 400, line-height 1.6
+
+Spacing scale
+8px base unit. All spacing is a multiple of 8. No arbitrary values.
+Token
+Value
+--space-1
+8px — icon gaps, tight inline spacing
+--space-2
+16px — component internal padding
+--space-3
+24px — card padding, list gaps
+--space-4
+32px — section sub-group spacing
+--space-6
+48px — between major content blocks
+--space-8
+64px — section vertical padding
+--space-12
+96px — large section separators
+--space-16
+128px — hero section padding
+
+Animation system
+Four animation categories, each with a precise definition. All animations respect prefers-reduced-motion. No animation exists purely for decoration — every motion communicates a state change or guides attention.
+Category
+Specification
+Entrance animations
+Elements fade up 24px on scroll enter. Duration 0.5s, ease-out cubic-bezier(0.16,1,0.3,1). Stagger children by 0.07s. Used on: feature cards, stat numbers, testimonial quotes.
+Marquee scroll
+Infinite horizontal scroll at 40px/s for logo strips. Two identical rows moving opposite directions (Dodo Payments pattern). CSS animation only, no JS.
+Tab transitions
+Feature section tab switch: content fades out (0.15s) then new content fades in and slides up 16px (0.3s). No layout shift.
+Code highlight
+Typing animation on hero code block. Characters appear at 30ms intervals. Cursor blinks at 1Hz. Triggered once on page load.
+Glow pulse
+Accent elements (CTA button border, active tab) pulse glow opacity 0.15 → 0.35 → 0.15 at 3s cycle. CSS only.
+Page transition
+Route changes: current page fades out (0.2s), new page fades in from 8px below (0.3s). Framer Motion AnimatePresence.
+Number counter
+Stats section: numbers count up from 0 when scrolled into view. Duration 1.2s, ease-out. JS IntersectionObserver trigger.
+Copy flash
+Copy Page CTA: button flashes green for 1.5s after click, text changes to 'Copied!' then resets. CSS transition only.
+
+Component library (shared across all pages)
+Component
+Behaviour
+<NavBar>
+Sticky, blurs background on scroll (backdrop-filter: blur(12px)). Logo left, nav links centre, CTA button right. Mobile: hamburger menu slides in from right.
+<Button>
+Three variants: primary (accent fill), ghost (border only), code (monospace label, subtle border). All have glow-on-hover effect.
+<Card>
+Dark surface, 1px border, border-radius 12px. Hover: border brightens, slight Y translate (-4px), 0.2s ease. Used for features, docs entries, blog posts.
+<CodeBlock>
+Syntax highlighted, line numbers, copy button top-right. Language label top-left. Supports bash, json, tsx, typescript.
+<Badge>
+Pill shape. Four colours: indigo (new), teal (stable), amber (beta), red (deprecated). Used in docs and changelogs.
+<Callout>
+Full-width box with left accent border. Four types: info (indigo), warning (amber), danger (red), success (teal). Used throughout docs.
+<MarqueeStrip>
+Infinite horizontal scroll row. Accepts logos or text items. Speed and direction props.
+<TabGroup>
+Horizontal tabs with animated active indicator. Content area below with fade transition.
+<CopyPageCTA>
+Floating or inline button. On click: assembles full OUAS context document, copies to clipboard, shows success flash. Full spec in Section 4.
+<StepTimeline>
+Vertical timeline for installation steps. Each step has number, title, description, optional code block.
+
+
+SECTION 02
+Page Architecture
+Every page, its route, sections, and content requirements
+
+Site map
+Route
+Purpose
+/
+Home — marketing landing page
+/docs
+Documentation root — redirects to /docs/introduction
+/docs/introduction
+What is OUAS, why it exists
+/docs/getting-started
+Install → annotate → generate → mount in 4 steps
+/docs/manifest-spec
+Full Component Manifest specification
+/docs/layout-config-spec
+Full Layout Config specification
+/docs/validation
+7-step validation pipeline, error codes
+/docs/agent-api
+4 Agent API endpoints, auth, examples
+/docs/sdk-react
+@ouas/react SDK reference
+/docs/renderer
+@ouas/renderer reference
+/docs/security
+Locked components, agent scope, rate limiting
+/docs/versioning
+Spec semver policy, migration guide
+/docs/changelog
+Spec version history
+/demo
+MailFlow demo — live agent-customisable email app
+/blog
+Engineering posts, spec updates, case studies
+/blog/[slug]
+Individual blog post
+
+Page specifications
+
+Home  /
+Primary marketing page. Converts curious developers into adopters.
+▸  Navbar — logo, nav links (Features / Docs / Demo / Blog), 'Get Started' CTA button
+▸  Hero section — bold H1 headline, subheadline, two CTA buttons (View Docs / See Demo), animated code block showing withOUAS() annotation
+▸  Logo marquee strip — 'Built on OUAS' placeholder logos scrolling infinitely, two rows opposite directions
+▸  Problem statement section — 'Software today looks the same for everyone' with dark card layout
+▸  How it works — 3-step visual: Developer annotates → Agent reads manifest → User sees custom UI
+▸  Feature tabs — three tabs: For Developers / For Users / For Agents. Each shows relevant benefit cards
+▸  Live transformation demo — embedded MailFlow iframe or video showing 3-second layout change
+▸  Stats bar — numbers: 4 endpoints, 7 validation rules, 1 npm install, 21-week build plan
+▸  Copy Page CTA section — 'Feed OUAS context to your AI agent' with the copy button prominently shown
+▸  Docs preview — 3 most-read doc pages shown as cards with title + description
+▸  Footer — links, GitHub, npm, Discord, spec version badge
+
+Documentation Root  /docs/*
+Mintlify-style docs site. Dark theme. Left sidebar navigation. Right sidebar TOC.
+▸  Left sidebar — collapsible sections matching sitemap. Active page highlighted in accent colour
+▸  Top bar — search (cmd+K), GitHub link, spec version badge (e.g. 'Spec v1.0')
+▸  Content area — MDX rendered with custom components: CodeBlock, Callout, Badge, StepTimeline
+▸  Right sidebar — H2/H3 table of contents, sticky, active heading tracked on scroll
+▸  Copy Page CTA — fixed floating button bottom-right on every docs page. Full spec in Section 4
+▸  Prev/Next navigation — bottom of each page, links to adjacent doc pages
+▸  Feedback — 'Was this helpful? Yes / No' at page bottom, non-blocking
+▸  Edit on GitHub — link to source MDX file in the GitHub repo
+▸  Search — full-text search across all docs pages. Keyboard accessible (cmd+K). Results show page title + matching snippet
+
+Getting Started  /docs/getting-started
+The most important doc page. Must get a developer to 'working manifest' in under 4 hours.
+▸  Prerequisites card — Node 18+, React 18+, existing React project
+▸  Step 1 — Install: npm install @ouas/react @ouas/renderer (animated typing, copy button)
+▸  Step 2 — Annotate: withOUAS() code example with syntax highlighting, inline field explanations
+▸  Step 3 — Generate: npx ouas generate command, shows example manifest.ouas.json output
+▸  Step 4 — Mount: OUASProvider code example with all props explained
+▸  What happens next — explanation of how agent calls work, link to Agent API docs
+▸  Quickstart sandbox — embedded StackBlitz or CodeSandbox showing a working annotated component
+▸  Copy Page CTA — inline version within the page, not just the floating button
+
+Demo  /demo
+MailFlow live. The product's best sales tool.
+▸  Persona switcher — three tabs: Executive / Student / Researcher. Switches mock user ID.
+▸  Agent chat panel — left or bottom. User types natural language. Shows loading state during transform.
+▸  MailFlow inbox — right/main. Renders current Layout Config via OUAS renderer.
+▸  Preset buttons — 'Try: make this a task list' / 'Try: show as calendar' / 'Try: knowledge base' — one-click demos
+▸  TransformStatus bar — shows success (green), failure (red), partial (amber) after each transform
+▸  View Layout Config button — shows the raw JSON that the agent produced. Educational for developers.
+▸  View Manifest button — shows the app manifest. Educational.
+▸  Reset button — returns to default layout
+▸  Copy Page CTA — 'Use this in your own app' with context copy button
+
+Blog  /blog
+Engineering posts and spec updates.
+▸  Hero — 'From the OUAS team' heading, subtitle about what gets published here
+▸  Featured post card — large, full-width, most recent or pinned post
+▸  Post grid — 3-column card grid. Each card: category badge, title, description, date, read time
+▸  Categories filter — All / Engineering / Spec Updates / Case Studies / Community
+▸  Individual post (/blog/[slug]) — full MDX content, author byline, date, reading time, Copy Page CTA in sidebar
+
+
+SECTION 03
+Navigation Architecture
+Navbar, sidebar, routing, and mobile behaviour
+
+Primary navbar — desktop
+Sticky. On scroll past 60px: background transitions from transparent to --color-bg-surface with backdrop-filter: blur(16px). 1px border-bottom appears. Transition duration 0.3s.
+Zone
+Content + behaviour
+Left zone
+OUAS logo — text-based wordmark in Syne font. Links to /.
+Centre zone
+Four nav links: Features (dropdown), Docs (links to /docs/introduction), Demo (links to /demo), Blog (links to /blog). Each link: 14px, weight 500, hover colour transition 0.15s.
+Features dropdown
+Opens on hover. Contains: For Developers, For End Users, For AI Agents, Security & Trust — each with icon, title, one-line description. Closes on mouse-leave with 200ms delay.
+Right zone
+GitHub star button (shows live star count via GitHub API), 'Get Started' primary button linking to /docs/getting-started.
+Active state
+Current page link has accent colour underline (2px, accent-primary). Animates in with width 0 → 100% on route change.
+
+Primary navbar — mobile
+Element
+Behaviour
+Trigger
+Hamburger icon (three lines → X animation) replaces centre and right zones below 768px.
+Menu
+Full-screen overlay slides in from right. Dark background. All nav links stacked vertically. Closes on link click or X button.
+Animation
+translate3d(100%, 0, 0) → translate3d(0, 0, 0), duration 0.35s, ease-out. Backdrop fades in simultaneously.
+
+Docs sidebar — desktop
+Property
+Value
+Width
+260px fixed. Sticky. Full viewport height minus navbar height.
+Structure
+Sections with collapsible groups. Each group has a section label (uppercase, 12px, secondary colour) and indented links below.
+Active item
+Left accent border (3px, accent-primary), background tint, text in primary colour.
+Hover item
+Background tint, text brightens, 0.1s transition.
+Scroll sync
+Sidebar scrolls independently. Active item always visible (scrollIntoView with smooth behaviour).
+Groups
+Introduction / Getting Started / Specification / SDK Reference / Security / Community
+
+Docs right sidebar — table of contents
+Property
+Value
+Width
+220px. Fixed right. Appears only on docs pages with 3+ H2 headings.
+Content
+H2 and H3 headings extracted from current MDX page. Indented hierarchy.
+Active tracking
+IntersectionObserver watches headings. Active heading highlighted in TOC with smooth transition.
+Mobile
+Hidden. TOC accessible via jump-to link at top of content on mobile.
+
+
+SECTION 04
+Copy Page CTA — Full Specification
+The most unique feature of the site — feeds OUAS context to any AI agent
+
+What it is
+The Copy Page CTA is a button — appearing on every page — that, when clicked, assembles a complete context document about OUAS and copies it to the user's clipboard. The user can then paste it into any AI agent (Claude, GPT, Cursor, Copilot) and immediately start building with OUAS without the agent needing to search the web or hallucinate the API.
+This is directly inspired by the 'llms.txt' movement and context window priming patterns. The difference is that this is interactive — it assembles the right context based on which page the user is currently on.
+
+Context document — what gets copied
+The copied text is structured markdown. It varies by page context:
+Page
+Context assembled
+On / (home)
+Full OUAS overview: what it is, the 4 packages, withOUAS() usage, Agent API endpoints, key rules (no eval, sealed registry). ~800 tokens.
+On /docs/getting-started
+Getting started context: install commands, full annotated component example, manifest shape, OUASProvider mounting. ~600 tokens.
+On /docs/manifest-spec
+Full manifest spec: all fields, all rules, example manifest JSON for MailFlow. ~900 tokens.
+On /docs/layout-config-spec
+Full layout config spec: all fields, all rules, executive + student + researcher example configs. ~900 tokens.
+On /docs/validation
+Validator context: all 7 validation steps, all error codes with messages, validation response format. ~500 tokens.
+On /docs/agent-api
+Agent API context: all 4 endpoints, request/response shapes, auth requirements, rate limits. ~400 tokens.
+On /docs/security
+Security context: locked components, agent_scope, rate limiting code, ownership enforcement. ~500 tokens.
+On /demo
+Demo context: MailFlow manifest, 3 example layout configs, agent pipeline explanation. ~700 tokens.
+
+Button placement
+Location
+Specification
+Floating button
+Fixed position, bottom-right, z-index 50. On all pages. 48px × 48px square with rounded corners. Icon: clipboard with spark. Tooltip on hover: 'Copy OUAS context for your AI agent'.
+Inline version
+Full-width banner inside page content. Shows on /docs/getting-started and /demo. Contains: label, description of what gets copied, button, and small note: 'Paste into Claude, GPT-4, or Cursor to start building immediately.'
+Docs sidebar version
+Compact version at bottom of left sidebar on all /docs/* pages. Small button with label 'Copy page context'.
+
+Button states
+State
+Visual
+Default
+Dark surface, 1px accent border, clipboard icon, label 'Copy context'
+Hover
+Background brightens, border glow intensifies, cursor pointer
+Loading (assembling)
+Icon spins for 200ms while context assembles (synchronous but feels deliberate)
+Success
+Background flashes green for 1.5s, icon changes to checkmark, label changes to 'Copied!'
+Reset
+Returns to default state after 1.5s
+
+Implementation
+// lib/copy-context.ts
+ 
+const CONTEXT_MAP: Record<string, () => string> = {
+  '/': () => buildHomeContext(),
+  '/docs/getting-started': () => buildGettingStartedContext(),
+  '/docs/manifest-spec': () => buildManifestContext(),
+  '/docs/layout-config-spec': () => buildLayoutConfigContext(),
+  '/docs/validation': () => buildValidationContext(),
+  '/docs/agent-api': () => buildAgentApiContext(),
+  '/docs/security': () => buildSecurityContext(),
+  '/demo': () => buildDemoContext(),
+};
+ 
+export async function copyPageContext(pathname: string): Promise<void> {
+  const builder = CONTEXT_MAP[pathname] ?? CONTEXT_MAP['/'];
+  const context = builder();
+  await navigator.clipboard.writeText(context);
+}
+ 
+function buildHomeContext(): string {
+  return [
+    '# OpenUI Adaptive Standard (OUAS) v1.0',
+    '## What it is',
+    OUAS_OVERVIEW,
+    '## The 4 packages',
+    PACKAGES_OVERVIEW,
+    '## Quick start',
+    QUICKSTART_EXAMPLE,
+    '## Key rules',
+    KEY_RULES,
+    '## Agent API endpoints',
+    AGENT_API_SUMMARY,
+  ].join('\n\n');
+}
+
+
+SECTION 05
+Documentation Architecture
+MDX structure, content requirements per page, and search
+
+Docs tech stack
+Concern
+Solution
+MDX rendering
+Next.js App Router + @next/mdx + next-mdx-remote for dynamic loading
+Syntax highlighting
+Shiki — dark theme 'github-dark-dimmed', line numbers, diff support
+Search
+Pagefind — static full-text search, runs at build time, no server needed
+Navigation
+Generated from /docs/navigation.ts — single source of truth for sidebar order
+Custom components
+Callout, CodeBlock, StepTimeline, Badge, ApiEndpoint, SchemaTable — all importable in MDX
+Frontmatter
+title, description, badge (stable/beta/new), lastUpdated, order
+
+Custom MDX component: <ApiEndpoint>
+Used in /docs/agent-api. Renders a styled API endpoint card showing method, path, description, request/response shapes.
+<ApiEndpoint
+  method='GET'
+  path='/ouas/manifest'
+  description='Returns the full Component Manifest for this app.'
+  response={`{ ouas_version, app_id, components[], data_sources[], constraints }`}
+/>
+
+Custom MDX component: <SchemaTable>
+Renders a two-column table of JSON field names and their types, required status, and description. Used in manifest-spec and layout-config-spec docs.
+
+Custom MDX component: <StepTimeline>
+Vertical numbered steps with optional code blocks. Used in getting-started. Each step has title, body, optional code, optional 'expected output' block.
+
+
+SECTION 06
+Phased Implementation Plan
+10 weeks from blank repo to live public website
+
+Stack decision
+Next.js 14+ App Router · TypeScript strict · Tailwind CSS · Framer Motion · MDX · Shiki · Pagefind · Vercel deploy. No exceptions — this stack is optimised for the content mix (marketing + docs + interactive demo).
+
+Phase 1 — Foundation
+Weeks 1–2 | Design system + project scaffold
+
+Everything in Phase 1 is invisible to users. No deployed pages yet. This phase produces the design system, the component library, and the project structure that every subsequent phase builds on. Doing this right prevents rewrites.
+
+Week 1 — Project scaffold + design tokens
+	•	Initialise Next.js 14 project with App Router, TypeScript strict, Tailwind CSS, ESLint, Prettier
+	•	Install Framer Motion, @next/mdx, next-mdx-remote, Shiki, Pagefind
+	•	Set up Vercel project, connect GitHub repo, enable preview deployments on every PR
+	•	Define all CSS variables (colour palette, spacing scale, typography) in globals.css
+	•	Load Syne and JetBrains Mono from Google Fonts via next/font
+	•	Configure Tailwind to consume CSS variables (extend theme with var() references)
+	•	Set up @/components, @/lib, @/content, @/styles path aliases in tsconfig
+
+Week 2 — Component library
+	•	Build <Button> — primary, ghost, code variants with glow-on-hover animation
+	•	Build <Card> — dark surface, hover lift, border brighten
+	•	Build <CodeBlock> — Shiki integration, copy button, language label, line numbers
+	•	Build <Badge> — indigo/teal/amber/red variants
+	•	Build <Callout> — info/warning/danger/success with left accent border
+	•	Build <NavBar> — desktop and mobile variants, scroll blur effect, hamburger animation
+	•	Build <MarqueeStrip> — CSS-only infinite scroll, two-direction support
+	•	Build <CopyPageCTA> — floating button, inline variant, all states including success flash
+	•	Write Storybook stories (or visual snapshot tests) for every component
+	•	Deploy component playground to /design on Vercel preview
+
+Phase 2 — Marketing Site
+Weeks 3–5 | Home page + blog + demo page shell
+
+Phase 2 builds the public-facing marketing pages. By end of Week 5 the site is publicly deployable and linkable, even if the docs are incomplete.
+
+Week 3 — Home page
+	•	Build Hero section — animated code block with typing effect, two CTA buttons, badge 'Spec v1.0'
+	•	Build logo marquee strip — two rows, opposite scroll directions (Dodo Payments pattern)
+	•	Build Problem statement section — dark cards showing today's one-size-fits-all problem
+	•	Build How it works section — 3-step visual with icons and connecting lines
+	•	Build Feature tabs — For Developers / For Users / For Agents with fade-switch content
+	•	Build Stats bar with IntersectionObserver number counter animation
+	•	Build Copy Page CTA section — inline promotional block with copy button
+	•	Build Footer — full link grid matching Dodo Payments footer structure
+	•	Implement scroll-triggered entrance animations on all sections (fade + translate)
+
+Week 4 — Demo page
+	•	Build MailFlow demo page shell — persona switcher, agent chat panel, inbox area
+	•	Integrate @ouas/renderer and @ouas/react from the monorepo (local package link)
+	•	Build all 15 OUAS-annotated MailFlow components (EmailRow, CalendarView, TopicGroup, etc.)
+	•	Load mock email data from /data/mock-emails.ts — 50+ emails across 3 personas
+	•	Wire agent chat panel to /api/agent/transform — Claude API integration with retry loop
+	•	Build preset buttons ('make this a task list' etc.) that bypass agent and apply presets
+	•	Build TransformStatus bar — success/failure/partial/no-op states
+	•	Build 'View Layout Config' and 'View Manifest' educational panels
+
+Week 5 — Blog + polish
+	•	Build blog index page — category filter tabs, featured post hero, post grid
+	•	Build blog post template — full MDX rendering, author byline, TOC sidebar
+	•	Write 3 launch posts: 'Introducing OUAS', 'How the validator works', 'Building MailFlow'
+	•	Implement Framer Motion page transitions on route changes
+	•	Add Open Graph meta tags and Twitter card images to all pages
+	•	Performance pass — image optimisation, font subsetting, Lighthouse score > 90 on all pages
+	•	Cross-browser test: Chrome, Firefox, Safari, mobile Safari
+
+Phase 3 — Documentation Site
+Weeks 6–8 | Full docs with MDX, search, Copy Page CTA
+
+Phase 3 is the highest-effort phase and the most valuable long-term. The docs site is where developers spend 90% of their time after discovering OUAS. Every page must be complete, accurate, and copyable.
+
+Week 6 — Docs infrastructure
+	•	Build docs layout — left sidebar, content area, right TOC sidebar
+	•	Build sidebar navigation from /docs/navigation.ts config file
+	•	Implement active page tracking in sidebar with smooth scroll-sync
+	•	Build right TOC sidebar with IntersectionObserver heading tracking
+	•	Configure MDX pipeline — @next/mdx, custom components registered globally
+	•	Implement Shiki syntax highlighting for all code blocks in MDX
+	•	Build Pagefind search — configure at build time, cmd+K modal with keyboard navigation
+	•	Build <ApiEndpoint> MDX component — method badge, path, description, request/response
+	•	Build <SchemaTable> MDX component — field name, type, required, description
+	•	Build <StepTimeline> MDX component — numbered steps with optional code
+	•	Wire Copy Page CTA into every docs page — floating button + docs sidebar version
+
+Week 7 — Core specification docs
+	•	Write /docs/introduction — What is OUAS, problem statement, 4-package overview
+	•	Write /docs/getting-started — Full 4-step tutorial with working code examples
+	•	Write /docs/manifest-spec — Complete spec with SchemaTable for every field, all rules as Callouts
+	•	Write /docs/layout-config-spec — Complete spec with SchemaTable, 3 full example configs
+	•	Write /docs/validation — 7-step pipeline, all error codes, validation response format
+	•	Write /docs/agent-api — All 4 endpoints with ApiEndpoint component, auth requirements, examples
+	•	Assemble Copy Page context strings for each doc page (lib/copy-context.ts)
+
+Week 8 — SDK and advanced docs
+	•	Write /docs/sdk-react — withOUAS() full API reference, TypeScript types, all options
+	•	Write /docs/renderer — OUASProvider props, component registry, fallback handler
+	•	Write /docs/security — Locked components, agent_scope, rate limiting, ownership enforcement
+	•	Write /docs/versioning — Semver policy, MAJOR/MINOR/PATCH rules, migration guide template
+	•	Write /docs/changelog — Spec v1.0 initial entry, format for future entries
+	•	Add 'Edit on GitHub' links to every doc page
+	•	Add 'Was this helpful?' feedback widget to every doc page
+	•	Full docs review pass — accuracy check against implementation plan
+
+Phase 4 — Launch Prep
+Weeks 9–10 | SEO, performance, analytics, deploy
+
+Week 9 — SEO + analytics
+	•	Generate sitemap.xml dynamically from all routes including /blog/[slug] and /docs/[slug]
+	•	Add robots.txt — allow all, sitemap reference
+	•	Implement structured data (JSON-LD) on home page (SoftwareApplication schema) and blog posts (Article schema)
+	•	Set up Plausible Analytics (privacy-first, no cookie banner needed) — track page views, Copy Page CTA clicks, demo interactions
+	•	Add custom event tracking: 'copy_context', 'demo_transform', 'preset_applied', 'docs_search'
+	•	Set up GitHub Stars API display in navbar — cached, refreshes every hour
+	•	Implement npm download count display on home page — sourced from npm registry API
+
+Week 10 — Final polish + launch
+	•	Accessibility audit — keyboard navigation, screen reader test, colour contrast check (WCAG AA minimum)
+	•	Final Lighthouse audit — target 95+ Performance, 100 Accessibility, 100 Best Practices on all pages
+	•	Set up Vercel production domain — ouas.dev (or openui-adaptive.dev)
+	•	Set up Vercel Edge Config for feature flags (e.g. 'agent_live' flag for Claude API toggle)
+	•	Configure Vercel Analytics for Core Web Vitals monitoring
+	•	Write README.md for the website repo with local dev instructions
+	•	Soft launch to 10 external developer testers — collect feedback
+	•	Fix critical feedback, then hard launch: Product Hunt submission, Hacker News Show HN post, Twitter/X announcement thread
+
+
+SECTION 07
+Timeline Summary
+10-week overview
+
+Week
+Deliverable
+Week 1
+Project scaffold, design tokens, font loading, path aliases, Vercel setup
+Week 2
+Full component library — Button, Card, CodeBlock, NavBar, MarqueeStrip, CopyPageCTA
+Week 3
+Home page — Hero, marquee, problem statement, feature tabs, stats, Copy Page CTA section
+Week 4
+Demo page — MailFlow full integration, agent chat, 3 personas, TransformStatus
+Week 5
+Blog pages, page transitions, OG tags, performance pass, cross-browser test
+Week 6
+Docs infrastructure — layout, sidebar, MDX pipeline, Shiki, Pagefind, custom components
+Week 7
+Core spec docs — introduction, getting started, manifest, layout config, validation, agent API
+Week 8
+SDK docs, security docs, versioning, changelog, feedback widgets, GitHub links
+Week 9
+Sitemap, analytics, structured data, GitHub stars, npm count, custom event tracking
+Week 10
+Accessibility audit, Lighthouse, production domain, developer tester feedback, launch
+
+Critical path
+Demo page (Week 4) and Getting Started doc (Week 7) are on the critical path. Everything else can slip by one week without delaying launch. These two cannot — they are the pages every new visitor hits first.
+
+
+OUAS Website Implementation Plan v1.0
+Design inspired by dodopayments.com. Adapt all brand elements for OUAS before shipping.

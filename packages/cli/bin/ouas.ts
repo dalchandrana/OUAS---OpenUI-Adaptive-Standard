@@ -13,6 +13,7 @@
 import { Command } from 'commander';
 import { generate } from '../src/commands/generate.js';
 import { validateCommand } from '../src/commands/validate.js';
+import { initCommand } from '../src/commands/init.js';
 
 const program = new Command();
 
@@ -35,6 +36,14 @@ program
       appId: options.appId,
       appName: options.appName,
     });
+  });
+
+program
+  .command('init')
+  .description('Initialize OUAS in your project')
+  .option('--skills', 'Inject OUAS skills into your agent context')
+  .action(async (options) => {
+    await initCommand(options);
   });
 
 program

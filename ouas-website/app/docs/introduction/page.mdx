@@ -1,0 +1,46 @@
+import { DocHero } from '@/components/mdx/DocHero';
+import { Comparison } from '@/components/mdx/Comparison';
+import { PackageGrid } from '@/components/mdx/PackageGrid';
+import { StepList } from '@/components/mdx/StepList';
+import { DocsPagination } from '@/components/mdx/DocsPagination';
+
+<DocHero 
+  title="Introduction to OUAS" 
+  subtitle="The specification for building safe, deterministic, and AI-native user interfaces by decoupling UI implementation from UI configuration."
+/>
+
+## The Problem
+
+Today's software interfaces are inherently rigid. They are statically built to look identical for a power user as they do for a complete beginner. While Large Language Models (LLMs) and AI agents have become incredibly adept at understanding user intent, they lack a safe, standardized pathway to interact with the underlying component trees of the applications they assist with.
+
+Historically, AI UI generation has relied on two flawed approaches:
+1. **Generating raw code (React/Vue)**: Slow, unsafe, requires a full build/eval pipeline, and prone to hallucinations.
+2. **Hacking the DOM**: Agents attempting to query and mutate existing DOM nodes (e.g., `document.querySelector`) fail the moment a class name or layout changes.
+
+<Comparison />
+
+## The Solution: Decoupling
+
+The **OpenUI Adaptive Standard (OUAS)** solves this problem by decoupling the **UI implementation** from the **UI configuration**. 
+
+Instead of an agent attempting to inject raw React code or manipulate the DOM, developers use OUAS to expose a strictly typed, JSON-serializable schema (a "Manifest") of what is allowed to change. The AI agent only ever interacts with this strictly validated JSON layout configuration.
+
+This means:
+- The host application handles the actual rendering (using your existing design system).
+- The AI handles the logical arrangement and state of those components via a data layer.
+
+## The Architecture & Packages
+
+OUAS is not a monolithic framework. It is a lightweight, modular specification broken down into four distinct packages to integrate seamlessly into your existing stack.
+
+<PackageGrid />
+
+## Core Philosophy
+
+When designing OUAS, we adhered to three non-negotiable tenets to ensure it is production-ready for enterprise applications.
+
+<StepList />
+
+<DocsPagination 
+  next={{ title: "Getting Started", href: "/docs/getting-started", description: "Learn how to annotate your first component in under 5 minutes." }}
+/>

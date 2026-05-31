@@ -1,0 +1,63 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { HoverLink } from "@/components/mdx/HoverLink";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+import { Alert } from "@/components/mdx/Alert";
+
+<DocHero 
+  title="Versioning the UI" 
+  subtitle="Strategies for safely updating your Component Manifest without breaking existing AI Agent integrations." 
+/>
+
+## Overview
+
+Because OUAS acts as a strict API between your UI and the AI Agent, changing a component's props is equivalent to introducing a breaking API change.
+
+If you rename a required prop in your React component (e.g., from `title` to `header`), the AI model will continue to hallucinate the old `title` prop until it is fine-tuned or re-prompted with the new <HoverLink href="/docs/manifest-spec" title="Component Manifest Spec" description="The central source of truth mapping UI components to schemas.">Component Manifest</HoverLink>.
+
+## The `ouas_version` Flag
+
+The root of every `manifest.json` requires an `ouas_version` flag. 
+
+```json
+{
+  "ouas_version": "1.0.0",
+  "app_id": "mailflow-dashboard",
+  "components": [ ... ]
+}
+```
+
+Whenever you make a breaking change to any component's schema:
+1. Increment the `ouas_version` (e.g., to `1.1.0` or `2.0.0` following Semantic Versioning).
+2. Deploy the new manifest alongside your updated UI.
+3. The AI Agent router should inspect this version and route the request to the appropriate model or system prompt that understands the new schema.
+
+<Alert 
+  type="warning" 
+  title="Breaking Changes" 
+  content="Adding a new optional prop or a new component is NOT a breaking change. Removing a component, removing a prop, or changing an existing prop's type is a breaking change." 
+/>
+
+## Backward Compatibility Strategies
+
+If you cannot immediately update the AI Agent, you should maintain backward compatibility in your React components.
+
+Instead of deleting the old prop, keep it in the component but mark it as deprecated in the schema, and map it internally to the new UI structure:
+
+```tsx
+export const WeatherCard = withOUAS(WeatherCardBase, {
+  id: 'weather-card',
+  schema: {
+    // New prop
+    header: { type: 'string' },
+    // Deprecated but maintained for older AI models
+    title: { type: 'string', description: '@deprecated Use header instead' }
+  }
+});
+```
+
+By maintaining the deprecated prop in the schema, older AI models will continue to function seamlessly until they are updated to use the new `header` prop.
+
+<DocsPagination 
+  prev={{ title: "Security", href: "/docs/security", description: "Understand the strict security guarantees" }}
+  next={{ title: "Changelog", href: "/docs/changelog", description: "View the release history of OUAS" }}
+/>

@@ -1,0 +1,70 @@
+import { DocHero } from "@/components/mdx/DocHero";
+import { StepList, Step } from "@/components/mdx/StepList";
+import { Alert } from "@/components/mdx/Alert";
+
+<DocHero
+  title="Agent Skills"
+  description="Teach any AI agent the OUAS programming model instantly using the Context Injection Layer."
+/>
+
+## What are OUAS Skills?
+
+LLM-powered coding agents (like Cursor, GitHub Copilot, Windsurf) are trained on vast amounts of code, but they might not yet have the latest OpenUI Adaptive Standard (OUAS) specification in their training data.
+
+Instead of hoping the agent knows how to write OUAS-compatible code or manually explaining the rules in every prompt, you can use **OUAS Skills**—a Context Injection Layer. This injects structured, machine-readable rules, anti-patterns, code patterns, and validation checklists directly into the agent's context window.
+
+<Alert type="info" title="The Problem Solved">
+  Agents often hallucinate hardcoded layout classes (e.g., `absolute top-4 right-4`) inside React components. OUAS Skills teach the agent that all layout decisions belong in a Layout Config, preventing these bad habits before the agent writes a single line of code.
+</Alert>
+
+## Generating Skills
+
+The easiest way to inject skills is using the OUAS CLI.
+
+```bash
+npx ouas init --skills
+```
+
+The CLI will automatically:
+1. Detect which agent environment you are using (`.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`).
+2. Fetch the latest `core.md` skills file containing the OUAS programming model.
+3. Prompt you to include optional Task-specific and Framework-specific skills.
+4. Write the perfectly formatted rules to your workspace configuration.
+
+## Types of Skills
+
+The `@ouas/skills` package is organized into three categories:
+
+### 1. Core Skills (`core.md`)
+The master file. It teaches the agent the foundational OUAS model, including:
+- **Rule 001**: Every component must be wrapped with `withOUAS()`.
+- **Rule 002**: Never hardcode layout in JSX.
+- **Rule 005**: `OUASProvider` must wrap the entire app.
+
+### 2. Task-Specific Skills
+Scoped files for specific workflows:
+- **Annotate**: How to retrofit existing components with `withOUAS()`.
+- **Manifest**: How to write meaningful JSDoc descriptions for better agent understanding.
+- **Agent API**: How to securely implement the `/discover`, `/config`, `/action`, and `/status` endpoints.
+- **Security**: Guidelines for using the `locked: true` parameter on sensitive components.
+- **Prompt Engineering**: How to prompt the LLM layout engine to return valid JSON configs.
+
+### 3. Framework Skills
+Handles framework-specific nuances:
+- **React**: Usage of the `useOUAS()` hook and efficient memoization.
+- **Next.js**: Handling App Router Server vs. Client component boundaries (`"use client"`).
+
+## Community Skills
+
+Third-party library authors who build on top of OUAS can publish their own skills. For example, a UI component library can ship an `ouas-skills.md` file. The CLI's `init --skills` command scans your `package.json` dependencies for a `skills` field and automatically merges community instructions.
+
+## Validation & Staleness
+
+Because the OUAS specification evolves, skills files cached locally can become stale. To ensure your agent is always following the latest spec, the `ouas generate` and `ouas validate` commands will automatically parse the version hash embedded in your `.cursorrules` (or equivalent) and warn you if you need to run `npx ouas init --skills` to update.
+
+---
+
+### Next Steps
+
+- Explore the [React SDK Reference](/docs/sdk-react) to see the code patterns the skills file injects.
+- Read about the [Validation Pipeline](/docs/validation) that acts as a runtime safety net for agent-generated configs.

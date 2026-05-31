@@ -69,7 +69,7 @@ import { OUASProvider } from '@ouas/renderer';
 
 ## MailFlow Demo
 
-Check out the [`apps/mailflow`](./apps/mailflow) directory to see OUAS in action. MailFlow is an adaptive email client that shifts entirely from a list view to a calendar or node graph based on user prompts via Claude 3.5 Sonnet.
+Check out the [`apps/mailflow`](./apps/mailflow) directory to see OUAS in action. MailFlow is an adaptive email client that shifts entirely from a list view to a calendar or node graph based on user prompts via Claude Sonnet 4.6.
 
 ## License
 
