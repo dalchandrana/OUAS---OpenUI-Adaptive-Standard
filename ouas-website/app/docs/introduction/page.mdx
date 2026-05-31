@@ -17,7 +17,26 @@ Historically, AI UI generation has relied on two flawed approaches:
 1. **Generating raw code (React/Vue)**: Slow, unsafe, requires a full build/eval pipeline, and prone to hallucinations.
 2. **Hacking the DOM**: Agents attempting to query and mutate existing DOM nodes (e.g., `document.querySelector`) fail the moment a class name or layout changes.
 
-<Comparison />
+<Comparison 
+  leftTitle="The Old Way"
+  rightTitle="The OUAS Way"
+  leftContent={
+    <ul className="text-sm text-danger/80 list-disc pl-4 space-y-2">
+      <li>Agents hallucinate non-existent React components</li>
+      <li>Evaluating raw code requires unsafe <code>eval()</code></li>
+      <li>DOM hacking breaks instantly on UI updates</li>
+      <li>No standard validation or safety guardrails</li>
+    </ul>
+  }
+  rightContent={
+    <ul className="text-sm text-success/80 list-disc pl-4 space-y-2">
+      <li>Agents interact with a strictly typed JSON Data Layer</li>
+      <li>100% deterministic rendering controlled by the host app</li>
+      <li>Layouts are strongly validated before being applied</li>
+      <li>Impossible for the AI to execute malicious code</li>
+    </ul>
+  }
+/>
 
 ## The Solution: Decoupling
 
