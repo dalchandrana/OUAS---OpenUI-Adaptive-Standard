@@ -361,13 +361,28 @@ export default function Home() {
                     GitHub
                   </a>
                 </li>
-                <li>
+                <li className="relative group inline-block">
                   <a
-                    href="#"
-                    className="transition-colors hover:text-text-primary"
+                    href="https://discord.gg/fmkQRF3jq"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-text-primary flex items-center gap-1"
                   >
                     Discord
                   </a>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-surface border border-border-color rounded-xl shadow-xl opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out origin-bottom z-50">
+                    <div className="relative bg-white p-1 rounded-lg">
+                      <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://discord.gg/fmkQRF3jq"
+                        alt="Discord QR Code"
+                        width={120}
+                        height={120}
+                        className="w-full h-auto rounded-md"
+                      />
+                    </div>
+                    {/* Tooltip arrow */}
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-surface border-b border-r border-border-color transform rotate-45"></div>
+                  </div>
                 </li>
               </ul>
             </div>
