@@ -10,6 +10,26 @@ import { DocsPagination } from "@/components/mdx/DocsPagination";
 <StepTimeline
   steps={[
     {
+      title: "v1.1.0 - Agent Skills & UI Enhancements",
+      description: "Introduced the Agent Skills context layer documentation and improved feature discovery in the UI.",
+      content: (
+        <div className="prose prose-sm dark:prose-invert">
+          <h4><span className="bg-accent-primary/20 text-accent-primary px-2 py-0.5 rounded text-[10px] font-bold mr-2 uppercase tracking-wider border border-accent-primary/30">Major</span> Agent Skills Integration</h4>
+          <ul>
+            <li><strong>Agent Skills Documentation</strong>: Added comprehensive documentation for OUAS Skills, explaining how to inject structured rules directly into an AI agent's context window.</li>
+            <li><strong>Docs Navigation Flow</strong>: Seamlessly integrated Agent Skills into the core documentation sequence (Agent API &rarr; Agent Skills &rarr; React SDK).</li>
+          </ul>
+
+          <h4><span className="bg-text-secondary/20 text-text-secondary px-2 py-0.5 rounded text-[10px] font-bold mr-2 uppercase tracking-wider border border-text-secondary/30">Minor</span> UI & Navigation Polish</h4>
+          <ul>
+            <li><strong>Mega Menu Prioritization</strong>: Elevated the "Skills" feature to the top of the Core Features dropdown for immediate visibility.</li>
+            <li><strong>Feature Badging</strong>: Implemented a sleek, dynamic "New" tag next to the Skills menu item to highlight the latest addition to the OUAS framework.</li>
+          </ul>
+        </div>
+      ),
+      icon: "sparkles"
+    },
+    {
       title: "v1.0.0 - The Genesis Release",
       description: "Initial stable release of the OpenUI Adaptive Standard (OUAS) monorepo. This release solidifies the architectural foundation for agentic UI generation.",
       content: (

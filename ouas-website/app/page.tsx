@@ -353,7 +353,7 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm text-text-secondary">
                 <li>
                   <a
-                    href="https://github.com"
+                    href="https://github.com/dalchandrana/OUAS---OpenUI-Adaptive-Standard.git"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="transition-colors hover:text-text-primary"

@@ -9,7 +9,7 @@ packages.forEach(pkg => {
   const content = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
   
   content.publishConfig = { access: 'public' };
-  content.repository = { type: 'git', url: 'https://github.com/ouas/ouas.git' };
+  content.repository = { type: 'git', url: 'https://github.com/dalchandrana/OUAS---OpenUI-Adaptive-Standard.git' };
   content.author = 'OUAS Team';
   content.license = 'MIT';
   // Note: the PRD says use @ouas scope. Let's make sure the name is scoped.

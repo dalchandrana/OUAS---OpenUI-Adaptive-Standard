@@ -1,6 +1,8 @@
 import { DocHero } from "@/components/mdx/DocHero";
 import { StepList, Step } from "@/components/mdx/StepList";
 import { Alert } from "@/components/mdx/Alert";
+import { DocsPagination } from "@/components/mdx/DocsPagination";
+
 
 <DocHero
   title="Agent Skills"
@@ -68,3 +70,8 @@ Because the OUAS specification evolves, skills files cached locally can become s
 
 - Explore the [React SDK Reference](/docs/sdk-react) to see the code patterns the skills file injects.
 - Read about the [Validation Pipeline](/docs/validation) that acts as a runtime safety net for agent-generated configs.
+
+<DocsPagination 
+  prev={{ title: "Agent API", href: "/docs/agent-api", description: "How the Agent interacts with the UI" }}
+  next={{ title: "React SDK Reference", href: "/docs/sdk-react", description: "Use the withOUAS HOC" }}
+/>

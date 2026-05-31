@@ -29,6 +29,7 @@ type MegaMenuItem = {
   title: string;
   description: string;
   href: string;
+  isNew?: boolean;
 };
 
 type MegaMenuGroup = {
@@ -41,6 +42,13 @@ const MEGA_MENUS: Record<string, MegaMenuGroup[]> = {
     {
       label: "Core",
       items: [
+        {
+          icon: <Brain className="h-5 w-5" />,
+          title: "Skills",
+          description: "Teach any AI agent the OUAS programming model instantly.",
+          href: "/features/skills",
+          isNew: true,
+        },
         {
           icon: <Layers className="h-5 w-5" />,
           title: "Adaptive Layouts",
@@ -58,12 +66,6 @@ const MEGA_MENUS: Record<string, MegaMenuGroup[]> = {
           title: "Agent API",
           description: "JSON protocol for AI agents to reshape UIs.",
           href: "/features/agent-api",
-        },
-        {
-          icon: <Brain className="h-5 w-5" />,
-          title: "Skills",
-          description: "Teach any AI agent the OUAS programming model instantly.",
-          href: "/features/skills",
         },
       ],
     },
@@ -224,8 +226,13 @@ export function MegaMenuNavBar() {
                                   {item.icon}
                                 </span>
                                 <div>
-                                  <span className="text-sm font-medium text-text-primary">
+                                  <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
                                     {item.title}
+                                    {item.isNew && (
+                                      <span className="rounded-full border border-accent-primary/20 bg-accent-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-primary shadow-[0_0_10px_rgba(0,0,0,0.1)]">
+                                        New
+                                      </span>
+                                    )}
                                   </span>
                                   <p className="mt-0.5 text-xs text-text-secondary leading-relaxed">
                                     {item.description}
@@ -264,7 +271,7 @@ export function MegaMenuNavBar() {
         <div className="hidden lg:flex items-center gap-3">
           <ThemeToggle />
           <a
-            href="https://github.com"
+            href="https://github.com/dalchandrana/OUAS---OpenUI-Adaptive-Standard.git"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:text-text-primary hover:bg-surface"
@@ -343,7 +350,14 @@ export function MegaMenuNavBar() {
                           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent-primary/10 text-accent-primary text-xs">
                             {item.icon}
                           </span>
-                          {item.title}
+                          <span className="flex items-center gap-2">
+                            {item.title}
+                            {item.isNew && (
+                              <span className="rounded-full border border-accent-primary/20 bg-accent-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-primary">
+                                New
+                              </span>
+                            )}
+                          </span>
                         </Link>
                       ))
                     )}
